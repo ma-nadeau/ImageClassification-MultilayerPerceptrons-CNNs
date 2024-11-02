@@ -56,6 +56,8 @@ class MultilayerPerceptron:
         X (numpy.ndarray): Input data of shape (n_samples, n_features).
 
         Returns:
+            float: The accuracy of the predictions, calculated as the mean of correct predictions. 
+            This value represents the proportion of correctly classified samples out of the total samples.
         tuple: A tuple containing:
             - activations (list of numpy.ndarray): List of activations for each layer, including the input layer.
             - Z_values (list of numpy.ndarray): List of linear combinations (Z) for each layer before applying the activation function.
@@ -127,7 +129,7 @@ class MultilayerPerceptron:
                 bias_gradients.insert(0, bias_gradient)
 
             # Calculate the gradients for the next layer
-            # dL/dA = dZ * W.T -> dA = dZ * W.T
+            # dL/dA = dL/dZ * W.T -> dA = dZ * W.T
             activation_gradient = np.dot(pre_activation_gradient, self.weights[i].T)
 
         return weight_gradients, bias_gradients if self.bias else None
@@ -154,6 +156,13 @@ class MultilayerPerceptron:
                 self.biases[i] -= self.learning_rate * bias_gradients[i]
 
     def fit(self, X, y):
+        """
+        Train the multilayer perceptron on the provided data.
+
+        Args:
+            X (numpy.ndarray): Input data of shape (n_samples, n_features).
+            y (numpy.ndarray): True labels of shape (n_samples, n_classes).
+        """
         # Perform the training loop
         for _ in range(self.epochs):
             # Loop through the dataset in batches
@@ -171,18 +180,35 @@ class MultilayerPerceptron:
                 self.update_parameters(weight_gradients, bias_gradients)
 
     def predict(self, X):
+        """
+        Perform a forward pass through the neural network to make predictions.
+
+        Args:
+            X (numpy.ndarray): Input data of shape (n_samples, n_features).
+
+        Returns:
+            numpy.ndarray: The output of the network (i.e., the activations of the output layer).
+        """
         # Perform a forward pass through the neural network
         activations, _ = self.forward(X)
         # Return the output of the network (i.e. the activations of the output layer)
         return activations[-1]
 
     def evaluate_acc(self, y, yh):
+        """
+        Evaluate the accuracy of the model's predictions.
+
+        Args:
+            y (numpy.ndarray): True labels of shape (n_samples, n_classes).
+            yh (numpy.ndarray): Predicted probabilities of shape (n_samples, n_classes).
+
+        Returns:
+            float: The accuracy of the predictions.
+        """
+        # Convert the predicted probabilities to class labels
         predictions = np.argmax(yh, axis=1)
+        # Convert the true labels to class labels
         labels = np.argmax(y, axis=1)
+        # Calculate the accuracy as the proportion of correct predictions
         accuracy = np.mean(predictions == labels)
         return accuracy
-
-    def evaluate_loss(self, y, yh):
-        m = y.shape[0]
-        loss = -np.sum(y * np.log(yh + 1e-8)) / m
-        return loss
