@@ -56,7 +56,7 @@ def convert_data_from_loader (loader):
 
 
 input_size = 28 * 28
-mlp = MultilayerPerceptron(input_size=input_size, hidden_layers=[], epochs=100, learning_rate=0.01)
+mlp = MultilayerPerceptron(input_size=input_size, hidden_layers=[256], epochs=100, learning_rate=0.01)
 
 
 train_list,train_label = convert_data_from_loader(train_loader)

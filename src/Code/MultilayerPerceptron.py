@@ -1,17 +1,9 @@
 import numpy as np
 from typing import Callable, List
+from utils import *
 
 # Define activation functions and derivatives
-def relu(x):
-    return np.maximum(0, x)
 
-def relu_derivative(x):
-    return (x > 0).astype(float)
-
-
-def softmax(x):
-    exp_x = np.exp(x - np.max(x, axis=1, keepdims=True))
-    return exp_x / np.sum(exp_x, axis=1, keepdims=True)
 def cross_entropy_loss(y, y_hat):
     m = y.shape[0]
     log_likelihood = -np.log(y_hat[range(m), y.argmax(axis=1)])
@@ -24,7 +16,7 @@ class MultilayerPerceptron:
         hidden_layers: List[int] = [64, 64],
         learning_rate: float = 0.01,
         epochs: int = 100,
-        activation_func: Callable = relu,
+        activation_func: Callable = ReLU,
         batch_size: int = 32,
     ):
         self.input_size = input_size
@@ -34,7 +26,7 @@ class MultilayerPerceptron:
         self.epochs = epochs
         self.activation_func = activation_func
         self.batch_size = batch_size
-        self.activation_derivative = relu_derivative if activation_func == relu else None  # Only for hidden layers
+        self.activation_derivative = ReLU_derivative if activation_func == ReLU else leaky_ReLU_derivative  # Only for hidden layers
 
         # Initialize weights and biases
         self.weights, self.biases = self._initialize_weights()
@@ -66,7 +58,6 @@ class MultilayerPerceptron:
         # Output layer error for cross-entropy loss
         delta = activations[-1] - y
         deltas = [delta]
-
         # Backward pass through hidden layers
         for i in reversed(range(len(self.weights) - 1)):
             delta = np.dot(deltas[-1], self.weights[i + 1].T) * self.activation_derivative(z_values[i])
