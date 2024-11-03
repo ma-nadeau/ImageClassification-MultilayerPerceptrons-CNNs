@@ -27,6 +27,8 @@ train_dataset = DataClass(split='train', download=download, size=28)
 test_dataset = DataClass(split='test', download=download, size=28)
 
 print(train_dataset)
+
+
 # encapsulate data into dataloader form
 def data_generator():
     train_loader = get_loader(dataset=train_dataset, batch_size=BATCH_SIZE)

@@ -83,6 +83,7 @@ if __name__ == '__main__':
     for x, y in train_loader:
         # Flatten each image in the batch to a 1D vector of 784 elements
         x = np.array(x).reshape(x.shape[0], -1)  # Converts from (32, 28, 28) to (32, 784)
+        x = x / 255.0
         y = np.eye(11)[y.flatten()]  # One-hot encoding for multi-class labels
 
         model.fit(x, y, optimizer)
@@ -96,6 +97,8 @@ if __name__ == '__main__':
     for x, y in test_loader:
         # Flatten each image in the batch to a 1D vector of 784 elements
         x = np.array(x).reshape(x.shape[0], -1)  # Converts from (32, 28, 28) to (32, 784)
+        x = x / 255.0
+
         y = y.flatten()
 
         # Make predictions
