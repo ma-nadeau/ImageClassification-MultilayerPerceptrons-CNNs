@@ -10,11 +10,6 @@ from utils import *
 # Bypass SSL verification for dataset download
 ssl._create_default_https_context = ssl._create_unverified_context
 
-# Global Variables
-MEAN_SUM = 0.0
-SQUARED_SUM = 0.0
-TOTAL_PIXELS = 0
-
 
 # Load the OrganAMNIST dataset information and download the train dataset
 def load_datasets():
@@ -25,8 +20,14 @@ def load_datasets():
 
 def preprocess_data(dataset):
     # Normalize and flatten the dataset
-    data = dataset.imgs / 255.0
+    data = dataset.imgs
     data = data.reshape(-1, 28 * 28)
+    
+    # Normalize the data
+    mean = np.mean(data, axis=0)
+    std = np.std(data, axis=0)
+    data = (data - mean) / std
+    
     labels = dataset.labels
     return data, labels
 
