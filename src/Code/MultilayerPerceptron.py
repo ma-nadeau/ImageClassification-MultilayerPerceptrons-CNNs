@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Callable, Tuple, List
+from typing import Callable, List
 from utils import ReLU, cross_entropy_loss_derivative
 
 
