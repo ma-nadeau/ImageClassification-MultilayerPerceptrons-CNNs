@@ -241,3 +241,5 @@ fabric.properties
 
 # Omit all .pdf files
 *.pdf
+
+.out
