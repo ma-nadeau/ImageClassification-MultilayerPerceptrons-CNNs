@@ -1,14 +1,12 @@
-from medmnist import OrganAMNIST
-import ssl
-import matplotlib.pyplot as plt
-import numpy as np
-import torch
-import torch.utils.data as data
-from MultilayerPerceptron import *
-from utils import *
+from medmnist import OrganAMNIST # type: ignore
+import matplotlib.pyplot as plt # type: ignore
+import numpy as np # type: ignore
+import torch # type: ignore
+import torch.utils.data as data # type: ignore
+from MultilayerPerceptron import * 
+from utils import * 
+import os
 
-# Bypass SSL verification for dataset download
-ssl._create_default_https_context = ssl._create_unverified_context
 
 
 # Load the OrganAMNIST dataset information and download the train dataset
@@ -22,12 +20,12 @@ def preprocess_data(dataset):
     # Normalize and flatten the dataset
     data = dataset.imgs
     data = data.reshape(-1, 28 * 28)
-    
+
     # Normalize the data
     mean = np.mean(data, axis=0)
     std = np.std(data, axis=0)
     data = (data - mean) / std
-    
+
     labels = dataset.labels
     return data, labels
 
@@ -72,8 +70,6 @@ def main():
     # Load the dataset
     train_dataset, test_dataset = load_datasets()
 
-    # Display 10 by 10 images from the dataset
-    train_dataset.montage(length=10).show()
 
     train_data, train_labels = preprocess_data(train_dataset)
     test_data, test_labels = preprocess_data(test_dataset)
@@ -83,19 +79,13 @@ def main():
     )
     test_data_tensor, test_labels_tensor = convert_to_tensors(test_data, test_labels)
 
-
-    # Select a single image from the training and test datasets
-    single_train_data_tensor = train_data_tensor[0].unsqueeze(0)
-    single_train_labels_tensor = train_labels_tensor[0].unsqueeze(0)
-    single_test_data_tensor = test_data_tensor[0].unsqueeze(0)
-    single_test_labels_tensor = test_labels_tensor[0].unsqueeze(0)
-
     # Train and fit using the single image
     prediction, accuracy = train_and_fit(
-        single_train_data_tensor, single_train_labels_tensor, single_test_data_tensor, single_test_labels_tensor
+        train_data_tensor, train_labels_tensor, test_data_tensor, test_labels_tensor
     )
     print(prediction)
     print(accuracy)
+
 
 if __name__ == "__main__":
     main()

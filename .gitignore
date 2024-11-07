@@ -242,4 +242,5 @@ fabric.properties
 # Omit all .pdf files
 *.pdf
 
-.out
+# Omit all .out files from SLURM
+*.out
