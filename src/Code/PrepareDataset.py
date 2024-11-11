@@ -5,8 +5,6 @@ import torch # type: ignore
 import torch.utils.data as data # type: ignore
 from MultilayerPerceptron import * 
 from utils import * 
-import os
-
 
 
 # Load the OrganAMNIST dataset information and download the train dataset
@@ -16,25 +14,20 @@ def load_datasets():
     return train_dataset, test_dataset
 
 
-def preprocess_data(dataset):
+def preprocess_data(dataset, mean=None, std=None):
     # Normalize and flatten the dataset
     data = dataset.imgs
     data = data.reshape(-1, 28 * 28)
 
-    # Normalize the data
-    mean = np.mean(data, axis=0)
-    std = np.std(data, axis=0)
+    if mean is None and std is None:
+        # Calculate mean and std from the training data only
+        mean = np.mean(data, axis=0)
+        std = np.std(data, axis=0)
+
     data = (data - mean) / std
 
     labels = dataset.labels
-    return data, labels
-
-
-def convert_to_tensors(data, labels):
-    # Convert to PyTorch tensors
-    data_tensor = torch.tensor(data, dtype=torch.float64)
-    labels_tensor = torch.tensor(labels, dtype=torch.long)
-    return data_tensor, labels_tensor
+    return data, labels,  mean, std
 
 
 def train_and_fit(X_train, y_train, X_test, y_test):
@@ -50,18 +43,13 @@ def train_and_fit(X_train, y_train, X_test, y_test):
         learning_rate=0.01,
         bias=True,
     )
-    # Convert tensors to numpy arrays
-    X_train_np = X_train.numpy()
-    y_train_np = y_train.numpy()
-    X_test_np = X_test.numpy()
-    y_test_np = y_test.numpy()
 
     # Train the model
-    mlp.fit(X_train_np, y_train_np)
+    mlp.fit(X_train, y_train)
     # Predict on the test set
-    predictions = mlp.predict(X_test_np)
+    predictions = mlp.predict(X_test)
     # Calculate the accuracy
-    accuracy = mlp.evaluate_acc(y_test_np, predictions)
+    accuracy = mlp.evaluate_acc(y_test, predictions)
 
     return predictions, accuracy
 
@@ -70,22 +58,16 @@ def main():
     # Load the dataset
     train_dataset, test_dataset = load_datasets()
 
+    # Preprocess training data and calculate mean, std
+    train_data, train_labels, mean, std = preprocess_data(train_dataset)
 
-    train_data, train_labels = preprocess_data(train_dataset)
-    test_data, test_labels = preprocess_data(test_dataset)
+    # Normalize test data using the mean and std from the training data
+    test_data, test_labels, _, _ = preprocess_data(test_dataset, mean=mean, std=std)
 
-    train_data_tensor, train_labels_tensor = convert_to_tensors(
-        train_data, train_labels
-    )
-    test_data_tensor, test_labels_tensor = convert_to_tensors(test_data, test_labels)
-
-    # Train and fit using the single image
-    prediction, accuracy = train_and_fit(
-        train_data_tensor, train_labels_tensor, test_data_tensor, test_labels_tensor
-    )
-    print(prediction)
-    print(accuracy)
-
+    # Train and fit
+    predictions, accuracy = train_and_fit(train_data, train_labels, test_data, test_labels)
+    print("Predictions:", predictions)
+    print("Accuracy:", accuracy)
 
 if __name__ == "__main__":
     main()

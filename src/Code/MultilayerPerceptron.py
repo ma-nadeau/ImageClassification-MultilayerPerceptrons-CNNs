@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Callable, List
-from utils import ReLU, cross_entropy_loss_derivative
+from utils import ReLU, cross_entropy_loss_derivative, softmax
 
 
 class MultilayerPerceptron:
@@ -12,9 +12,9 @@ class MultilayerPerceptron:
         hidden_layers: List[int] = [64, 64],
         number_of_hidden_layers: int = 2,
         activation_function: Callable = ReLU,
-        learning_rate: float = 0.01,
-        epochs: int = 100,
-        batch_size: int = 32,
+        learning_rate: float = 0.001,
+        epochs: int = 1000,
+        batch_size: int = 16,
         bias: bool = True,
     ):
         self.input_size = input_size
@@ -165,6 +165,12 @@ class MultilayerPerceptron:
         """
         # Perform the training loop
         for _ in range(self.epochs):
+            # Shuffle the dataset at the start of each epoch
+            indices = np.arange(X.shape[0])
+            np.random.shuffle(indices)
+            X = X[indices]
+            y = y[indices]
+
             # Loop through the dataset in batches
             for i in range(0, X.shape[0], self.batch_size):
                 X_batch = X[i : i + self.batch_size]
@@ -192,7 +198,7 @@ class MultilayerPerceptron:
         # Perform a forward pass through the neural network
         activations, _ = self.forward(X)
         # Return the output of the network (i.e. the activations of the output layer)
-        return activations[-1]
+        return softmax(activations[-1])
 
     def evaluate_acc(self, y, yh):
         """
