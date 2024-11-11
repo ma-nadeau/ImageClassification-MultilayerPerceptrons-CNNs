@@ -9,7 +9,7 @@ def cross_entropy_loss(y, y_hat):
     log_likelihood = -np.log(y_hat[range(m), y.argmax(axis=1)])
     return np.sum(log_likelihood) / m
 
-class MultilayerPerceptron:
+class MultilayerPerceptron2:
     def __init__(
         self,
         input_size: int,

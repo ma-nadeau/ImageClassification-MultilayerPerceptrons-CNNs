@@ -1,10 +1,9 @@
 import numpy as np
 from medmnist import OrganAMNIST
-import torch
-from torchvision import transforms
 from torch.utils.data import DataLoader
-train_dataset = OrganAMNIST(split="train")
-from MultilayerPerceptron import *
+train_dataset = OrganAMNIST(split="train",download = True)
+from MultilayerPerceptron_bc import *
+from MultilayerPerceptron_marc import *
 from sklearn.preprocessing import OneHotEncoder
 
 mean_sum = 0.0
@@ -13,28 +12,32 @@ total_pixels = 0
 
 # Convert each image to a tensor and calculate mean and std
 for img, _ in train_dataset:
-    img_tensor = transforms.ToTensor()(img)
-    img_tensor = img_tensor.view(-1)
+    img = np.array(img)
+    img = img.reshape(-1) # Flatten the image
 
     # Update statistics
-    mean_sum += img_tensor.mean()
-    squared_sum += img_tensor.pow(2).mean()
-    total_pixels += img_tensor.numel()
+    mean_sum += img.mean()
+    squared_sum += (img ** 2).mean()
+    total_pixels += img.shape[0]  # Number of pixels
 
-# Calculate mean and standard deviation
-mean = mean_sum / len(train_dataset)
-std = torch.sqrt(squared_sum / len(train_dataset) - mean.pow(2))
+# Calculate mean and std across all images
+mean = mean_sum / total_pixels
+std = np.sqrt(squared_sum / total_pixels - mean ** 2)
+
+# Print the results
+print("Mean :", mean)
+print("Standard deviation :", std)
 
 # Define transformations: normalize and flatten images
-transform = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize((mean,), (std,)),
-    transforms.Lambda(lambda x: x.view(-1))
-])
+def numpy_transform(img):
+    img = np.array(img) / 255.0  # Scale to [0, 1] range
+    img = (img - mean) / std     # Normalize using calculated mean and std
+    img = img.flatten()          # Flatten the image
+    return img
 
 # Load dataset splits
-train_dataset = OrganAMNIST(split="train", transform=transform)
-test_dataset = OrganAMNIST(split="test", transform=transform)
+train_dataset = OrganAMNIST(split="train", transform=lambda img: numpy_transform(img))
+test_dataset = OrganAMNIST(split="test", transform=lambda img: numpy_transform(img))
 
 train_loader = DataLoader(dataset=train_dataset, batch_size=64, shuffle=True)
 test_loader = DataLoader(dataset=test_dataset, batch_size=64, shuffle=False)
@@ -56,10 +59,11 @@ def convert_data_from_loader (loader):
 
 
 input_size = 28 * 28
-mlp = MultilayerPerceptron(input_size=input_size, hidden_layers=[64], epochs=100, learning_rate=0.01)
-
+mlp = MultilayerPerceptron(input_size=input_size,output_size=11)
 
 train_list,train_label = convert_data_from_loader(train_loader)
 mlp.fit(train_list,train_label)
+
 test_list,test_label = convert_data_from_loader(test_loader)
-mlp.evaluate_acc(test_list,test_label)
+y_pred = mlp.predict(test_list)
+print(mlp.evaluate_acc(y_pred,test_label))
