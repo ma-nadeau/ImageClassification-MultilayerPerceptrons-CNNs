@@ -41,7 +41,7 @@ class MultilayerPerceptron:
         activations = [X]
         z_values = []
 
-        # Forward pass through each layer
+
         for i in range(len(self.weights)):
             z = np.dot(activations[-1], self.weights[i]) + self.biases[i]
             z_values.append(z)

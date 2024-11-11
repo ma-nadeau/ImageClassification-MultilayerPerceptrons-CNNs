@@ -13,8 +13,8 @@ total_pixels = 0
 
 # Convert each image to a tensor and calculate mean and std
 for img, _ in train_dataset:
-    img_tensor = transforms.ToTensor()(img)  # Convert PIL image to tensor (0-1 range)
-    img_tensor = img_tensor.view(-1)  # Flatten the image
+    img_tensor = transforms.ToTensor()(img)
+    img_tensor = img_tensor.view(-1)
 
     # Update statistics
     mean_sum += img_tensor.mean()
@@ -56,11 +56,10 @@ def convert_data_from_loader (loader):
 
 
 input_size = 28 * 28
-mlp = MultilayerPerceptron(input_size=input_size, hidden_layers=[256], epochs=100, learning_rate=0.01)
+mlp = MultilayerPerceptron(input_size=input_size, hidden_layers=[64], epochs=100, learning_rate=0.01)
 
 
 train_list,train_label = convert_data_from_loader(train_loader)
 mlp.fit(train_list,train_label)
-
 test_list,test_label = convert_data_from_loader(test_loader)
 mlp.evaluate_acc(test_list,test_label)
