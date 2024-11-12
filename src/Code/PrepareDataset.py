@@ -39,8 +39,8 @@ def numpy_transform(img):
 train_dataset = OrganAMNIST(split="train", transform=lambda img: numpy_transform(img))
 test_dataset = OrganAMNIST(split="test", transform=lambda img: numpy_transform(img))
 
-train_loader = DataLoader(dataset=train_dataset, batch_size=64, shuffle=True)
-test_loader = DataLoader(dataset=test_dataset, batch_size=64, shuffle=False)
+#train_loader = DataLoader(dataset=train_dataset, batch_size=64, shuffle=True)
+#test_loader = DataLoader(dataset=test_dataset, batch_size=64, shuffle=False)
 
 
 def convert_data_from_loader (loader):
@@ -48,22 +48,22 @@ def convert_data_from_loader (loader):
     labels_list = []
 # Iterate through the DataLoader
     for data, labels in loader:
-        data_list.append(data.numpy())
-        labels_list.append(labels.numpy())
-    data_array = np.concatenate(data_list, axis=0)
-    labels_array = np.concatenate(labels_list, axis=0)
+        data_list.append(data)
+        labels_list.append(labels)
+
     encoder = OneHotEncoder(categories='auto', sparse_output=False, dtype=int)
 
-    one_hot_labels = encoder.fit_transform(labels_array)
-    return data_array, one_hot_labels
+    one_hot_labels = encoder.fit_transform(labels_list)
+    data_list=np.array(data_list)
+    return data_list, one_hot_labels
 
 
 input_size = 28 * 28
-mlp = MultilayerPerceptron(input_size=input_size,output_size=11)
+mlp = MultilayerPerceptron2(input_size=input_size)
 
-train_list,train_label = convert_data_from_loader(train_loader)
+train_list,train_label = convert_data_from_loader(train_dataset)
 mlp.fit(train_list,train_label)
 
-test_list,test_label = convert_data_from_loader(test_loader)
+test_list,test_label = convert_data_from_loader(test_dataset)
 y_pred = mlp.predict(test_list)
-print(mlp.evaluate_acc(y_pred,test_label))
+print(mlp.evaluate_acc(test_list,test_label))

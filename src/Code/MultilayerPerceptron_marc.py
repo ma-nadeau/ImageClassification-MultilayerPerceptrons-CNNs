@@ -170,8 +170,9 @@ class MultilayerPerceptron:
 
             # Loop through the dataset in batches
             for i in range(0, X.shape[0], self.batch_size):
-                X_batch = X[i : i + self.batch_size]
-                y_batch = y[i : i + self.batch_size]
+                end = i + self.batch_size
+                batch_indices = indices[i:end]
+                X_batch, y_batch = X[batch_indices], y[batch_indices]
                 # Forward pass: compute activations (A) and pre-activations (Z) using Z = A_prev * W + b, A = g(Z)
                 activations, Z_values = self.forward(X_batch)
                 # Backward pass: compute gradients of the loss with respect to the weights and biases
