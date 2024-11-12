@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Callable, List
-from utils2 import ReLU, cross_entropy_loss_derivative, softmax
+from utils import ReLU, cross_entropy_loss_derivative, softmax
 
 
 class MultilayerPerceptron:

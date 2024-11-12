@@ -1,7 +1,7 @@
 import numpy as np
 from medmnist import OrganAMNIST
 train_dataset = OrganAMNIST(split="train",download = True)
-from MultilayerPerceptron_marc import *
+from MultilayerPerceptron import *
 from sklearn.preprocessing import OneHotEncoder
 
 # First pass: Calculate the mean
