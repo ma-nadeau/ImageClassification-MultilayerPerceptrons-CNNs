@@ -1,36 +1,39 @@
 import numpy as np
 from medmnist import OrganAMNIST
-from torch.utils.data import DataLoader
 train_dataset = OrganAMNIST(split="train",download = True)
-from MultilayerPerceptron_bc import *
 from MultilayerPerceptron_marc import *
 from sklearn.preprocessing import OneHotEncoder
 
-mean_sum = 0.0
-squared_sum = 0.0
+# First pass: Calculate the mean
+mean_sum = 0
 total_pixels = 0
 
-# Convert each image to a tensor and calculate mean and std
+for img, _ in train_dataset:
+    img = np.array(img)  # Convert PIL image to NumPy array
+    img = img.reshape(-1)  # Flatten the image
+    mean_sum += img.sum()  # Total sum of all pixel values
+    total_pixels += img.size  # Total number of pixels in the dataset
+
+# Calculate the mean across all pixels
+mean = mean_sum / total_pixels
+
+# Second pass: Calculate the variance
+variance_sum = 0
+
 for img, _ in train_dataset:
     img = np.array(img)
-    img = img.reshape(-1) # Flatten the image
+    img = img.reshape(-1)
+    variance_sum += ((img - mean) ** 2).sum()  # Sum of squared differences from the mean
 
-    # Update statistics
-    mean_sum += img.mean()
-    squared_sum += (img ** 2).mean()
-    total_pixels += img.shape[0]  # Number of pixels
+# Calculate the standard deviation
+std = np.sqrt(variance_sum / total_pixels)
 
-# Calculate mean and std across all images
-mean = mean_sum / total_pixels
-std = np.sqrt(squared_sum / total_pixels - mean ** 2)
+print("Mean across dataset:", mean)
+print("Standard deviation across dataset:", std)
 
-# Print the results
-print("Mean :", mean)
-print("Standard deviation :", std)
 
 # Define transformations: normalize and flatten images
 def numpy_transform(img):
-    img = np.array(img) / 255.0  # Scale to [0, 1] range
     img = (img - mean) / std     # Normalize using calculated mean and std
     img = img.flatten()          # Flatten the image
     return img
@@ -38,9 +41,6 @@ def numpy_transform(img):
 # Load dataset splits
 train_dataset = OrganAMNIST(split="train", transform=lambda img: numpy_transform(img))
 test_dataset = OrganAMNIST(split="test", transform=lambda img: numpy_transform(img))
-
-#train_loader = DataLoader(dataset=train_dataset, batch_size=64, shuffle=True)
-#test_loader = DataLoader(dataset=test_dataset, batch_size=64, shuffle=False)
 
 
 def convert_data_from_loader (loader):
