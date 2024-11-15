@@ -66,6 +66,20 @@ def softmax(x, derivative=False):
     exp_x = np.exp(x - np.max(x))
     return exp_x / exp_x.sum(axis=1, keepdims=True)
 
+def tanh(x, derivative=False):
+    """_summary_
+    Computes the tanh activation function or its derivative.
+
+    Args:
+        x (np.ndarray): Input array.
+        derivative (bool, optional): If True, computes the derivative. Defaults to False.
+
+    Returns:
+        np.ndarray: Output array after applying tanh or its derivative.
+    """
+    if derivative:
+        return tanh_derivative(x)
+    return np.tanh(x)
 
 ### Activation Functions Derivatives ###
 
@@ -85,6 +99,8 @@ def sigmoid_derivative(x):
 def softmax_derivative(x):
     return x * (1 - x)
 
+def tanh_derivative(x):
+    return 1 - np.tanh(x) ** 2
 
 ### Loss Functions ###
 

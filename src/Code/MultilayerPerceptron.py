@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Callable, List
-from utils import ReLU, cross_entropy_loss_derivative
-
+from utils import ReLU, cross_entropy_loss_derivative, softmax
+from RegularizationType import Regularization
 
 class MultilayerPerceptron:
 
@@ -12,10 +12,12 @@ class MultilayerPerceptron:
         hidden_layers: List[int] = [64, 64],
         number_of_hidden_layers: int = 2,
         activation_function: Callable = ReLU,
-        learning_rate: float = 0.01,
+        learning_rate: float = 0.001,
         epochs: int = 100,
-        batch_size: int = 32,
+        batch_size: int = 16,
         bias: bool = True,
+        regularization: Regularization = Regularization.NONE,
+        regularization_param: float = 0.01,
     ):
         self.input_size = input_size
         self.output_size = output_size
@@ -26,6 +28,8 @@ class MultilayerPerceptron:
         self.epochs = epochs
         self.batch_size = batch_size
         self.bias = bias
+        self.regularization = regularization
+        self.regularization_param = regularization_param
         self.initialize_parameters()
 
     def initialize_parameters(self):
@@ -117,6 +121,12 @@ class MultilayerPerceptron:
             # dL/dW = dL/dZ * A.T / m -> dW = A.T * dZ / m
             weight_gradient = np.dot(activations[i].T, pre_activation_gradient) / m
 
+            # Add regularization term to the weight gradients
+            if self.regularization == Regularization.L2:
+                weight_gradient += (self.regularization_param / m) * self.weights[i]
+            elif self.regularization == Regularization.L1:
+                weight_gradient += (self.regularization_param / m) * np.sign(self.weights[i])
+
             # Insert the gradients at the beginning of the list
             weight_gradients.insert(0, weight_gradient)
 
@@ -165,6 +175,12 @@ class MultilayerPerceptron:
         """
         # Perform the training loop
         for _ in range(self.epochs):
+            # Shuffle the dataset at the start of each epoch
+            indices = np.arange(X.shape[0])
+            np.random.shuffle(indices)
+            X = X[indices]
+            y = y[indices]
+
             # Loop through the dataset in batches
             for i in range(0, X.shape[0], self.batch_size):
                 X_batch = X[i : i + self.batch_size]
@@ -192,7 +208,7 @@ class MultilayerPerceptron:
         # Perform a forward pass through the neural network
         activations, _ = self.forward(X)
         # Return the output of the network (i.e. the activations of the output layer)
-        return activations[-1]
+        return softmax(activations[-1])
 
     def evaluate_acc(self, y, yh):
         """
