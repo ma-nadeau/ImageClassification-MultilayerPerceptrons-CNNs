@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Callable, List
 from utils import ReLU, cross_entropy_loss_derivative, softmax
-
+from RegularizationType import Regularization
 
 class MultilayerPerceptron:
 
@@ -13,9 +13,10 @@ class MultilayerPerceptron:
         number_of_hidden_layers: int = 2,
         activation_function: Callable = ReLU,
         learning_rate: float = 0.001,
-        epochs: int = 1000,
+        epochs: int = 100,
         batch_size: int = 16,
         bias: bool = True,
+        regularization: Regularization = Regularization.NONE,
     ):
         self.input_size = input_size
         self.output_size = output_size
