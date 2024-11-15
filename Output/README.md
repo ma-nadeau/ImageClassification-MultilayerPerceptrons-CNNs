@@ -31,6 +31,10 @@ cat gpu-grad-01-63.out
 ```
 Replace `gpu-grad-01-63` with the name of the computer.
 
+To cancel a job:
+```bash
+scancel <job_id>
+```
 ## Clearing *.out Files on MIMI
 On mimi, you may end up with many *.out files. To clear them, first go to the `Output` Folder:
 ```bash
