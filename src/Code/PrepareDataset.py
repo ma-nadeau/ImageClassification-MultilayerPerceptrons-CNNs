@@ -47,7 +47,7 @@ def numpy_flatten(img):
     return img
 
 
-def load_and_normalize_dataset(mean, std):
+def load_and_normalize_dataset(mean, std, size=28):
     """
     Load and normalize the OrganAMNIST dataset.
 
@@ -63,10 +63,10 @@ def load_and_normalize_dataset(mean, std):
     """
     # Load dataset splits
     train_dataset = OrganAMNIST(
-        split="train", transform=lambda img: numpy_transform(img, mean, std)
+        split="train", transform=lambda img: numpy_transform(img, mean, std), size=size,
     )
     test_dataset = OrganAMNIST(
-        split="test", transform=lambda img: numpy_transform(img, mean, std)
+        split="test", transform=lambda img: numpy_transform(img, mean, std), size=size,
     )
     return train_dataset, test_dataset
 
@@ -92,10 +92,10 @@ def convert_data_from_loader(loader):
     return data_list, one_hot_labels
 
 
-def prepare_normalized_dataset() -> tuple:
-    train_dataset = OrganAMNIST(split="train", download=True)
+def prepare_normalized_dataset(size=28) -> tuple:
+    train_dataset = OrganAMNIST(split="train", download=True, size=size)
     mean, std = calculate_mean_and_std(train_dataset)
-    train_dataset, test_dataset = load_and_normalize_dataset(mean, std)
+    train_dataset, test_dataset = load_and_normalize_dataset(mean, std, size)
     train_list, train_label = convert_data_from_loader(train_dataset)
     test_list, test_label = convert_data_from_loader(test_dataset)
 
@@ -207,7 +207,7 @@ def compare_activations_for_256_double_hidden_layers(
 
 
 def compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
-    train_list, train_label, test_list, test_label
+    train_list, train_label, test_list, test_label, input_size =28*28
 ):
     """Compare MLP models with 2 hidden layers of 256 units each using L1 and L2 regularization.
 
@@ -218,10 +218,10 @@ def compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
         test_label (np.ndarray): Testing labels.
     """
     mlp_double_hidden_layer_L1 = (
-        create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1()
+        create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1( input_size)
     )
     mlp_double_hidden_layer_L2 = (
-        create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2()
+        create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2(input_size)
     )
 
     mlp_double_hidden_layer_L1.fit(train_list, train_label)
@@ -289,23 +289,23 @@ if __name__ == "__main__":
     ) = prepare_unnormalized_dataset()
 
     train_list_128, train_label_128, test_list_128, test_label_128 = (
-        prepare_normalized_dataset()
+        prepare_normalized_dataset(size=128)
     )
 
-    # Experiment #1
+    # # Experiment #1
     compare_basic_mlp_models(train_list, train_label, test_list, test_label)
 
-    # Experiment #2
+    # # Experiment #2
     compare_activations_for_256_double_hidden_layers(
         train_list, train_label, test_list, test_label
     )
 
-    # Experiment #3
+    # # Experiment #3
     compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
         train_list, train_label, test_list, test_label
     )
 
-    # Experiment #4
+    # # Experiment #4
     evaluate_256_double_hidden_layers_unnormalized_image(
         unnormalized_train_list,
         unnormalized_train_label,
@@ -315,5 +315,5 @@ if __name__ == "__main__":
 
     # Experiment #5 - 128x128 pixels
     compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
-        train_list_128, train_label_128, test_list_128, test_label_128
+        train_list_128, train_label_128, test_list_128, test_label_128, input_size=128*128
     )
