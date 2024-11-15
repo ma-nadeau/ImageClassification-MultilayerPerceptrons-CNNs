@@ -17,6 +17,7 @@ class MultilayerPerceptron:
         batch_size: int = 16,
         bias: bool = True,
         regularization: Regularization = Regularization.NONE,
+        regularization_param: float = 0.01,
     ):
         self.input_size = input_size
         self.output_size = output_size
@@ -27,6 +28,8 @@ class MultilayerPerceptron:
         self.epochs = epochs
         self.batch_size = batch_size
         self.bias = bias
+        self.regularization = regularization
+        self.regularization_param = regularization_param
         self.initialize_parameters()
 
     def initialize_parameters(self):
@@ -117,6 +120,12 @@ class MultilayerPerceptron:
             # Calculate the gradients for the weights
             # dL/dW = dL/dZ * A.T / m -> dW = A.T * dZ / m
             weight_gradient = np.dot(activations[i].T, pre_activation_gradient) / m
+
+            # Add regularization term to the weight gradients
+            if self.regularization == Regularization.L2:
+                weight_gradient += (self.regularization_param / m) * self.weights[i]
+            elif self.regularization == Regularization.L1:
+                weight_gradient += (self.regularization_param / m) * np.sign(self.weights[i])
 
             # Insert the gradients at the beginning of the list
             weight_gradients.insert(0, weight_gradient)

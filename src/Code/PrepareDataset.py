@@ -41,6 +41,12 @@ def numpy_transform(img, mean, std):
     return img
 
 
+def numpy_flatten(img):
+    img = np.array(img)  # Convert PIL image to NumPy array
+    img = img.flatten()
+    return img
+
+
 def load_and_normalize_dataset(mean, std):
     """
     Load and normalize the OrganAMNIST dataset.
@@ -66,8 +72,8 @@ def load_and_normalize_dataset(mean, std):
 
 
 def load_dataset():
-    train_dataset = OrganAMNIST(split="train", download=True)
-    test_dataset = OrganAMNIST(split="test", download=True)
+    train_dataset = OrganAMNIST(split="train", transform=lambda img: numpy_flatten(img))
+    test_dataset = OrganAMNIST(split="test", transform=lambda img: numpy_flatten(img))
     return train_dataset, test_dataset
 
 
@@ -95,6 +101,14 @@ def prepare_normalized_dataset() -> tuple:
 
     return train_list, train_label, test_list, test_label
 
+def prepare_normalized_dataset_128() -> tuple:
+    train_dataset = OrganAMNIST(split="train", download=True)
+    mean, std = calculate_mean_and_std(train_dataset)
+    train_dataset, test_dataset = load_and_normalize_dataset(mean, std)
+    train_list, train_label = convert_data_from_loader(train_dataset)
+    test_list, test_label = convert_data_from_loader(test_dataset)
+
+    return train_list, train_label, test_list, test_label
 
 def prepare_unnormalized_dataset() -> tuple:
     train_dataset, test_dataset = load_dataset()
@@ -203,7 +217,6 @@ def compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
         test_list (np.ndarray): Testing data.
         test_label (np.ndarray): Testing labels.
     """
-    return
     mlp_double_hidden_layer_L1 = (
         create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1()
     )
@@ -232,7 +245,7 @@ def compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
     )
 
 
-def evaluate_256_double_hidden_layers_unregularized_image(
+def evaluate_256_double_hidden_layers_unnormalized_image(
     unnormalized_train_list,
     unnormalized_train_label,
     unnormalized_test_list,
@@ -267,12 +280,17 @@ def evaluate_256_double_hidden_layers_unregularized_image(
 
 if __name__ == "__main__":
     train_list, train_label, test_list, test_label = prepare_normalized_dataset()
+
     (
         unnormalized_train_list,
         unnormalized_train_label,
         unnormalized_test_list,
         unnormalized_test_label,
     ) = prepare_unnormalized_dataset()
+
+    train_list_128, train_label_128, test_list_128, test_label_128 = (
+        prepare_normalized_dataset()
+    )
 
     # Experiment #1
     compare_basic_mlp_models(train_list, train_label, test_list, test_label)
@@ -288,9 +306,14 @@ if __name__ == "__main__":
     )
 
     # Experiment #4
-    evaluate_256_double_hidden_layers_unregularized_image(
+    evaluate_256_double_hidden_layers_unnormalized_image(
         unnormalized_train_list,
         unnormalized_train_label,
         unnormalized_test_list,
         unnormalized_test_label,
+    )
+
+    # Experiment #5 - 128x128 pixels
+    compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
+        train_list_128, train_label_128, test_list_128, test_label_128
     )
