@@ -1,3 +1,5 @@
+import os
+
 from medmnist import OrganAMNIST  # type: ignore
 from MultilayerPerceptron import *
 from sklearn.preprocessing import OneHotEncoder  # type: ignore
@@ -26,7 +28,7 @@ def calculate_mean_and_std(train_dataset):
         img = np.array(img)
         img = img.reshape(-1)
         variance_sum += (
-            (img - mean) ** 2
+                (img - mean) ** 2
         ).sum()  # Sum of squared differences from the mean
 
     # Calculate the standard deviation
@@ -60,6 +62,9 @@ def load_and_normalize_dataset(mean, std, size=28):
 
     Returns:
         tuple: A tuple containing the training and testing datasets.
+        :param mean:
+        :param std:
+        :param size:
     """
     # Load dataset splits
     train_dataset = OrganAMNIST(
@@ -101,6 +106,7 @@ def prepare_normalized_dataset(size=28) -> tuple:
 
     return train_list, train_label, test_list, test_label
 
+
 def prepare_normalized_dataset_128() -> tuple:
     train_dataset = OrganAMNIST(split="train", download=True)
     mean, std = calculate_mean_and_std(train_dataset)
@@ -109,6 +115,7 @@ def prepare_normalized_dataset_128() -> tuple:
     test_list, test_label = convert_data_from_loader(test_dataset)
 
     return train_list, train_label, test_list, test_label
+
 
 def prepare_unnormalized_dataset() -> tuple:
     train_dataset, test_dataset = load_dataset()
@@ -155,7 +162,7 @@ def compare_basic_mlp_models(train_list, train_label, test_list, test_label):
 
 
 def compare_activations_for_256_double_hidden_layers(
-    train_list, train_label, test_list, test_label
+        train_list, train_label, test_list, test_label
 ):
     """Compare MLP models with 2 hidden layers of 256 units each using different activation functions.
 
@@ -207,7 +214,7 @@ def compare_activations_for_256_double_hidden_layers(
 
 
 def compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
-    train_list, train_label, test_list, test_label, input_size =28*28
+        train_list, train_label, test_list, test_label, input_size=28 * 28
 ):
     """Compare MLP models with 2 hidden layers of 256 units each using L1 and L2 regularization.
 
@@ -218,7 +225,7 @@ def compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
         test_label (np.ndarray): Testing labels.
     """
     mlp_double_hidden_layer_L1 = (
-        create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1( input_size)
+        create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1(input_size)
     )
     mlp_double_hidden_layer_L2 = (
         create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2(input_size)
@@ -246,10 +253,10 @@ def compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
 
 
 def evaluate_256_double_hidden_layers_unnormalized_image(
-    unnormalized_train_list,
-    unnormalized_train_label,
-    unnormalized_test_list,
-    unnormalized_test_label,
+        unnormalized_train_list,
+        unnormalized_train_label,
+        unnormalized_test_list,
+        unnormalized_test_label,
 ):
     """Evaluate MLP model with 2 hidden layers of 256 units each using unnormalized images.
 
@@ -276,6 +283,75 @@ def evaluate_256_double_hidden_layers_unnormalized_image(
     print(
         f"Accuracy of MLP with 2 hidden layers of 256 units each using unnormalized images: {acc_double_hidden_layer_unnormalized}"
     )
+
+
+def plot_train_vs_test_accuracy_for_learning_rates(
+        train_list, train_label, test_list, test_label, learning_rates, output_dir="Results"
+):
+    """
+        Plots train vs. test accuracy for increasing learning rates for different MLP configurations.
+
+        Args:
+            train_list (np.ndarray): Training data.
+            train_label (np.ndarray): Training labels.
+            test_list (np.ndarray): Testing data.
+            test_label (np.ndarray): Testing labels.
+            learning_rates (list): List of learning rates to evaluate.
+        """
+    models = {
+        "No Hidden Layer": create_mlp_with_no_hidden_layer,
+        "Single Hidden Layer (256 units)": create_mlp_with_single_hidden_layer_of_256_units,
+        "Double Hidden Layers (256 units)": create_mlp_with_double_hidden_layer_of_256_units,
+        "Double Layers + Leaky ReLU": create_mlp_with_double_hidden_layer_of_256_units_and_leaky_ReLU_activation,
+        "Double Layers + Tanh": create_mlp_with_double_hidden_layer_of_256_and_tanh_activation,
+        "Double Layers + Sigmoid": create_mlp_with_double_hidden_layer_of_256_units_and_sigmoid_activation,
+        "Double Layers + ReLU + L1": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1,
+        "Double Layers + ReLU + L2": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2,
+    }
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # Create plot
+    plt.figure(figsize=(16, 10))
+    plt.figure(figsize=(16, 10))
+
+    for model_name, create_model in models.items():
+        train_accuracies = []
+        test_accuracies = []
+
+        for lr in learning_rates:
+            # Create and train the model with the specified learning rate
+            model = create_model(learning_rate=lr)
+            model.fit(train_list, train_label)
+
+            # Evaluate on training data
+            y_train_pred = model.predict(train_list)
+            train_accuracy = model.evaluate_acc(train_label, y_train_pred)
+            train_accuracies.append(train_accuracy)
+
+            # Evaluate on test data
+            y_test_pred = model.predict(test_list)
+            test_accuracy = model.evaluate_acc(test_label, y_test_pred)
+            test_accuracies.append(test_accuracy)
+
+        # Plot train and test accuracies for this model
+        plt.plot(learning_rates, train_accuracies, label=f'{model_name} - Train')
+        plt.plot(learning_rates, test_accuracies, label=f'{model_name} - Test', linestyle='dashed')
+
+    # Configure plot
+    plt.xscale('log')  # Log scale for learning rates
+    plt.xlabel('Learning Rate')
+    plt.ylabel('Accuracy')
+    plt.title('Train vs. Test Accuracy for Increasing Learning Rates')
+    plt.legend()
+    plt.grid(True)
+
+    # Save the plot to the output directory
+    plot_path = os.path.join(output_dir, "train_vs_test_accuracy_learning_rates.png")
+    plt.savefig(plot_path)
+
+    # Close the plot to free memory
+    plt.close()
 
 
 if __name__ == "__main__":
@@ -315,5 +391,11 @@ if __name__ == "__main__":
 
     # Experiment #5 - 128x128 pixels
     compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
-        train_list_128, train_label_128, test_list_128, test_label_128, input_size=128*128
+        train_list_128, train_label_128, test_list_128, test_label_128, input_size=128 * 128
+    )
+
+    # Experiment #6 - Train vs. Test Accuracy for Learning Rates
+    learning_rates = [1e-5, 1e-4, 1e-3, 1e-2, 1e-1]
+    plot_train_vs_test_accuracy_for_learning_rates(
+        train_list, train_label, test_list, test_label, learning_rates
     )

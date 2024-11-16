@@ -105,6 +105,7 @@ def create_mlp_with_double_hidden_layer_of_256_and_tanh_activation(input_size=28
         batch_size=batch_size,
         learning_rate=learning_rate,
         bias=bias,
+        initialization_strategy="xavier"
     )
     return mlp
 
