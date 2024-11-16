@@ -33,8 +33,8 @@ class MultilayerPerceptron:
         self.bias = bias
         self.regularization = regularization
         self.regularization_param = regularization_param
-        self.initialize_parameters()
         self.initialization_strategy = initialization_strategy  # Store strategy
+        self.initialize_parameters()
 
     def initialize_parameters(self):
         """
@@ -49,9 +49,9 @@ class MultilayerPerceptron:
         if self.initialization_strategy == "he":
             # He initialization for ReLU
             self.weights = [
-                np.random.randn(layer_sizes[i], layer_sizes[i + 1]) * np.sqrt(2.0 / layer_sizes[i])
-                for i in range(len(layer_sizes) - 1)
-            ]
+                    np.random.randn(layer_sizes[i], layer_sizes[i + 1]) * np.sqrt(2.0 / layer_sizes[i])
+                    for i in range(len(layer_sizes) - 1)
+                ]
         elif self.initialization_strategy == "xavier":
             # Xavier initialization for Tanh
             self.weights = [
