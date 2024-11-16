@@ -240,3 +240,31 @@ class MultilayerPerceptron:
         # Calculate the accuracy as the proportion of correct predictions
         accuracy = np.mean(predictions == labels)
         return accuracy
+
+    def evaluate_recall(self, y, yh):
+        """
+        Evaluate the recall of the model's predictions.
+        Args:
+            y (numpy.ndarray): True labels of shape (n_samples, n_classes).
+            yh (numpy.ndarray): Predicted probabilities of shape (n_samples, n_classes).
+        Returns:
+            float: The recall of the predictions.
+        """
+        # Convert the predicted probabilities to class labels
+        predictions = np.argmax(yh, axis=1)
+        # Convert the true labels to class labels
+        labels = np.argmax(y, axis=1)
+            
+        recalls = []
+        for class_label in range(y.shape[1]):
+            # Calculate true positives and false negatives for each class
+            true_positives = np.sum((predictions == labels) & (labels == class_label))
+            false_negatives = np.sum((predictions != labels) & (labels == class_label))
+            
+            # Calculate recall for each class
+            recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) != 0 else 0
+            recalls.append(recall)
+        
+        # Calculate average recall
+        average_recall = np.mean(recalls)
+        return average_recall
