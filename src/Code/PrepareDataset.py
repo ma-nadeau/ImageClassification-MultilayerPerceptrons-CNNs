@@ -952,16 +952,16 @@ if __name__ == "__main__":
     #     input_size=128 * 128,
     # )
 
-    # Experiment #6 - Train vs. Test Accuracy for Learning Rates
-    learning_rates = [1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1]
-    batch_sizes = [8, 16, 32, 64, 128]
-    epoch_sizes = [5, 10, 20, 50, 100]
-    plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
-        train_list, train_label, test_list, test_label, learning_rates, batch_sizes, epoch_sizes,
-        train_list_128, train_label_128, test_list_128, test_label_128
-    )
+    # # Experiment #6 - Train vs. Test Accuracy for Learning Rates
+    # learning_rates = [1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1]
+    # batch_sizes = [8, 16, 32, 64, 128]
+    # epoch_sizes = [5, 10, 20, 50, 100]
+    # plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
+    #     train_list, train_label, test_list, test_label, learning_rates, batch_sizes, epoch_sizes,
+    #     train_list_128, train_label_128, test_list_128, test_label_128
+    # )
 
     # regularization_strengths(train_list, train_label, test_list, test_label)
 
     # # Call the function to plot the results
-    # plot_experiment_results()
+    plot_experiment_results()
