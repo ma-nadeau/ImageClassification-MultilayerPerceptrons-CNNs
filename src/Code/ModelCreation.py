@@ -130,7 +130,8 @@ def create_mlp_with_double_hidden_layer_of_256_units_and_sigmoid_activation(inpu
     )
     return mlp
 
-def create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1(input_size=28 * 28, output_size=11, epochs=10, batch_size=16, learning_rate=0.001, bias=True):
+def create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1(input_size=28 * 28, output_size=11, epochs=10, batch_size=16, learning_rate=0.001,
+                                                                            bias=True, regularization_param=0.01):
     """
     Creates a model with two hidden layers of 256 units each, Leaky ReLU activation function, and L1 regularization.
 
@@ -148,10 +149,12 @@ def create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1(inpu
         learning_rate=learning_rate,
         bias=bias,
         regularization=Regularization.L1,
+        regularization_param=regularization_param,
     )
     return mlp
 
-def create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2(input_size=28 * 28, output_size=11, epochs=10, batch_size=16, learning_rate=0.001, bias=True):
+def create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2(input_size=28 * 28, output_size=11, epochs=10, batch_size=16,
+                                                                            learning_rate=0.001, bias=True, regularization_param=0.01):
     """
     Creates a model with two hidden layers of 256 units each, Leaky ReLU activation function, and L2 regularization.
 
@@ -169,5 +172,6 @@ def create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2(inpu
         learning_rate=learning_rate,
         bias=bias,
         regularization=Regularization.L2,
+        regularization_param=regularization_param,
     )
     return mlp

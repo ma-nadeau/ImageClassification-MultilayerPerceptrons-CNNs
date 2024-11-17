@@ -6,7 +6,7 @@ from sklearn.preprocessing import OneHotEncoder  # type: ignore
 import numpy as np
 from ModelCreation import *
 import time
-import matplotlib.pyplot as plt # type: ignore
+import matplotlib.pyplot as plt  # type: ignore
 
 
 def calculate_mean_and_std(train_dataset):
@@ -30,7 +30,7 @@ def calculate_mean_and_std(train_dataset):
         img = np.array(img)
         img = img.reshape(-1)
         variance_sum += (
-            (img - mean) ** 2
+                (img - mean) ** 2
         ).sum()  # Sum of squared differences from the mean
 
     # Calculate the standard deviation
@@ -157,14 +157,14 @@ def compare_basic_mlp_models(train_list, train_label, test_list, test_label):
     y_pred_single_hidden_layer = mlp_single_hidden_layer.predict(test_list)
     end_time_single_hidden_layer = time.time()
     diff_single_hidden_layer = (
-        end_time_single_hidden_layer - start_time_single_hidden_layer
+            end_time_single_hidden_layer - start_time_single_hidden_layer
     )
 
     start_time_double_hidden_layer = time.time()
     y_pred_double_hidden_layer = mlp_double_hidden_layer.predict(test_list)
     end_time_double_hidden_layer = time.time()
     diff_double_hidden_layer = (
-        end_time_double_hidden_layer - start_time_double_hidden_layer
+            end_time_double_hidden_layer - start_time_double_hidden_layer
     )
 
     acc_no_hidden_layer = mlp_no_hidden_layer.evaluate_acc(
@@ -211,7 +211,7 @@ def compare_basic_mlp_models(train_list, train_label, test_list, test_label):
 
 
 def compare_activations_for_256_double_hidden_layers(
-    train_list, train_label, test_list, test_label
+        train_list, train_label, test_list, test_label
 ):
     """Compare MLP models with 2 hidden layers of 256 units each using different activation functions.
 
@@ -233,22 +233,22 @@ def compare_activations_for_256_double_hidden_layers(
     mlp_double_hidden_layer_relu.fit(train_list, train_label)
     end_time_double_hidden_layer_relu = time.time()
     diff_double_hidden_layer_relu = (
-        end_time_double_hidden_layer_relu - start_time_double_hidden_layer_relu
+            end_time_double_hidden_layer_relu - start_time_double_hidden_layer_relu
     )
 
     start_time_double_hidden_layer_leaky_relu = time.time()
     mlp_double_hidden_layer_leaky_relu.fit(train_list, train_label)
     end_time_double_hidden_layer_leaky_relu = time.time()
     diff_double_hidden_layer_leaky_relu = (
-        end_time_double_hidden_layer_leaky_relu
-        - start_time_double_hidden_layer_leaky_relu
+            end_time_double_hidden_layer_leaky_relu
+            - start_time_double_hidden_layer_leaky_relu
     )
 
     start_time_double_hidden_layer_tanh = time.time()
     mlp_double_hidden_layer_tanh.fit(train_list, train_label)
     end_time_double_hidden_layer_tanh = time.time()
     diff_double_hidden_layer_tanh = (
-        end_time_double_hidden_layer_tanh - start_time_double_hidden_layer_tanh
+            end_time_double_hidden_layer_tanh - start_time_double_hidden_layer_tanh
     )
 
     y_pred_double_hidden_layer_relu = mlp_double_hidden_layer_relu.predict(test_list)
@@ -283,20 +283,24 @@ def compare_activations_for_256_double_hidden_layers(
         f"Accuracy of MLP with 2 hidden layers of 256 units each using ReLU: {acc_double_hidden_layer_relu}"
     )
     print(f"Recall of MLP with 2 hidden layers of 256 units each using ReLU: {recall_double_hidden_layer_relu}")
-    print(f"Time taken for MLP with 2 hidden layers of 256 units each using ReLU: {diff_double_hidden_layer_relu} seconds")
-    
+    print(
+        f"Time taken for MLP with 2 hidden layers of 256 units each using ReLU: {diff_double_hidden_layer_relu} seconds")
+
     print(
         f"Accuracy of MLP with 2 hidden layers of 256 units each using Leaky ReLU: {acc_double_hidden_layer_leaky_relu}"
     )
-    print(f"Recall of MLP with 2 hidden layers of 256 units each using Leaky ReLU: {recall_double_hidden_layer_leaky_relu}")
-    print(f"Time taken for MLP with 2 hidden layers of 256 units each using Leaky ReLU: {diff_double_hidden_layer_leaky_relu} seconds")
-    
+    print(
+        f"Recall of MLP with 2 hidden layers of 256 units each using Leaky ReLU: {recall_double_hidden_layer_leaky_relu}")
+    print(
+        f"Time taken for MLP with 2 hidden layers of 256 units each using Leaky ReLU: {diff_double_hidden_layer_leaky_relu} seconds")
+
     print(
         f"Accuracy of MLP with 2 hidden layers of 256 units each using Tanh: {acc_double_hidden_layer_tanh}"
     )
     print(f"Recall of MLP with 2 hidden layers of 256 units each using Tanh: {recall_double_hidden_layer_tanh}")
-    print(f"Time taken for MLP with 2 hidden layers of 256 units each using Tanh: {diff_double_hidden_layer_tanh} seconds")
-    
+    print(
+        f"Time taken for MLP with 2 hidden layers of 256 units each using Tanh: {diff_double_hidden_layer_tanh} seconds")
+
     return (
         acc_double_hidden_layer_relu,
         diff_double_hidden_layer_relu,
@@ -311,7 +315,7 @@ def compare_activations_for_256_double_hidden_layers(
 
 
 def compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
-    train_list, train_label, test_list, test_label, input_size=28 * 28
+        train_list, train_label, test_list, test_label, input_size=28 * 28
 ):
     """Compare MLP models with 2 hidden layers of 256 units each using L1 and L2 regularization.
 
@@ -336,14 +340,14 @@ def compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
     mlp_double_hidden_layer_L1.fit(train_list, train_label)
     end_time_double_hidden_layer_L1 = time.time()
     diff_time_double_hidden_layer_L1 = (
-        end_time_double_hidden_layer_L1 - start_time_double_hidden_layer_L1
+            end_time_double_hidden_layer_L1 - start_time_double_hidden_layer_L1
     )
 
     start_time_double_hidden_layer_L2 = time.time()
     mlp_double_hidden_layer_L2.fit(train_list, train_label)
     end_time_double_hidden_layer_L2 = time.time()
     diff_time_double_hidden_layer_L2 = (
-        end_time_double_hidden_layer_L2 - start_time_double_hidden_layer_L2
+            end_time_double_hidden_layer_L2 - start_time_double_hidden_layer_L2
     )
 
     y_pred_double_hidden_layer_L1 = mlp_double_hidden_layer_L1.predict(test_list)
@@ -392,10 +396,10 @@ def compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
 
 
 def evaluate_256_double_hidden_layers_unnormalized_image(
-    unnormalized_train_list,
-    unnormalized_train_label,
-    unnormalized_test_list,
-    unnormalized_test_label,
+        unnormalized_train_list,
+        unnormalized_train_label,
+        unnormalized_test_list,
+        unnormalized_test_label,
 ):
     """Evaluate MLP model with 2 hidden layers of 256 units each using unnormalized images.
 
@@ -414,7 +418,7 @@ def evaluate_256_double_hidden_layers_unnormalized_image(
     )
     end_time_double_hidden_layer_unnormalized = time.time()
     diff_time_double_hidden_layer_unnormalized = end_time_double_hidden_layer_unnormalized - start_time_double_hidden_layer_unnormalized
-    
+
     y_pred_double_hidden_layer_unnormalized = (
         mlp_double_hidden_layer_unnormalized.predict(unnormalized_test_list)
     )
@@ -441,14 +445,14 @@ def evaluate_256_double_hidden_layers_unnormalized_image(
 
 
 def plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
-    train_list,
-    train_label,
-    test_list,
-    test_label,
-    learning_rates,
-    batch_sizes,
-    epoch_sizes,
-    output_dir="Results",
+        train_list,
+        train_label,
+        test_list,
+        test_label,
+        learning_rates,
+        batch_sizes,
+        epoch_sizes,
+        output_dir="Results",
 ):
     """
     Generates three plots:
@@ -608,6 +612,72 @@ def plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
     plt.close()
 
 
+def regularization_strengths(train_list,
+                             train_label,
+                             test_list,
+                             test_label):
+    regularization_strengths = [0.001, 0.01, 0.1, 1.0, 10.0]
+    l1_accuracies = {'train': [], 'test': []}
+    l2_accuracies = {'train': [], 'test': []}
+
+    for regularization_strength in regularization_strengths:
+        model = create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1(
+            regularization_param=regularization_strength)
+        model.fit(train_list, train_label)
+
+        # Evaluate training accuracy
+        y_train_pred = model.predict(train_list)
+        train_accuracy = model.evaluate_acc(train_label, y_train_pred)
+        l1_accuracies['train'].append(train_accuracy)
+
+        # Evaluate test accuracy
+        y_test_pred = model.predict(test_list)
+        test_accuracy = model.evaluate_acc(test_label, y_test_pred)
+        l1_accuracies['test'].append(test_accuracy)
+
+    for regularization_strength in regularization_strengths:
+        model = create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2(
+            regularization_param=regularization_strength)
+        model.fit(train_list, train_label)
+
+        # Evaluate training accuracy
+        y_train_pred = model.predict(train_list)
+        train_accuracy = model.evaluate_acc(train_label, y_train_pred)
+        l2_accuracies['train'].append(train_accuracy)
+
+        # Evaluate test accuracy
+        y_test_pred = model.predict(test_list)
+        test_accuracy = model.evaluate_acc(test_label, y_test_pred)
+        l2_accuracies['test'].append(test_accuracy)
+
+        # Plot the results
+    plt.figure(figsize=(10, 6))
+
+    # Validation accuracy
+    plt.plot(regularization_strengths, l1_accuracies['train'], label='L1 Train', marker='o')
+    plt.plot(regularization_strengths, l2_accuracies['train'], label='L2 Train', marker='o')
+
+    # Test accuracy
+    plt.plot(regularization_strengths, l1_accuracies['test'], label='L1 Test', linestyle='--', marker='o')
+    plt.plot(regularization_strengths, l2_accuracies['test'], label='L2 Test', linestyle='--', marker='o')
+
+    plt.xscale('log')
+    plt.xlabel('Regularization Strength (log scale)')
+    plt.ylabel('Accuracy')
+    plt.title('Test and Train Accuracy vs Regularization Strength')
+    plt.legend()
+    plt.grid(True)
+
+    # Save the plot
+    result_folder = "../Results"
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+
+    # Correcting the filename
+    result_file = os.path.join(result_folder, "accuracy_vs_regularization_plot.png")
+    plt.savefig(result_file)
+
+
 def plot_experiment_results():
     # Experiment #1
     (
@@ -689,8 +759,8 @@ def plot_experiment_results():
         recall_double_hidden_layer_unnormalized,
         recall_double_hidden_layer_L1_128, recall_double_hidden_layer_L2_128
     ]
-    print("\nRecalls: ",accuracies)
-    
+    print("\nRecalls: ", accuracies)
+
     times = [
         diff_no_hidden_layer, diff_single_hidden_layer, diff_double_hidden_layer,
         diff_double_hidden_layer_relu, diff_double_hidden_layer_leaky_relu, diff_double_hidden_layer_tanh,
@@ -698,8 +768,8 @@ def plot_experiment_results():
         diff_time_double_hidden_layer_unnormalized,
         diff_time_double_hidden_layer_L1_128, diff_time_double_hidden_layer_L2_128
     ]
-    print("\nTimes: ",times)
-    
+    print("\nTimes: ", times)
+
     labels = [
         "No Hidden Layer", "Single Hidden Layer", "Double Hidden Layer",
         "Double Hidden Layer ReLU", "Double Hidden Layer Leaky ReLU", "Double Hidden Layer Tanh",
@@ -722,11 +792,12 @@ def plot_experiment_results():
 
     plt.xlabel("Recall", fontsize=12, fontweight='bold', labelpad=10)
     plt.ylabel("Accuracy", fontsize=12, fontweight='bold', labelpad=10)
-    plt.title("Accuracy vs Recall for Different MLP Models\n(Color represents Time)", fontsize=14, fontweight='bold', pad=20)
+    plt.title("Accuracy vs Recall for Different MLP Models\n(Color represents Time)", fontsize=14, fontweight='bold',
+              pad=20)
 
     plt.grid(True, which='major', linestyle='-', linewidth=0.7, alpha=0.8)
     plt.grid(True, which='minor', linestyle='--', linewidth=0.5, alpha=0.5)
-    
+
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
 
@@ -740,7 +811,6 @@ def plot_experiment_results():
 
     result_file = os.path.join(result_folder, "accuracy_vs_recall_scatter_plot.png")
     plt.savefig(result_file)
-
 
 
 if __name__ == "__main__":
@@ -828,6 +898,8 @@ if __name__ == "__main__":
     # plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
     #     train_list, train_label, test_list, test_label, learning_rates, batch_sizes, epoch_sizes
     # )
-    
-    # Call the function to plot the results
-    plot_experiment_results()
+
+    regularization_strengths(train_list, train_label, test_list, test_label)
+
+    # # Call the function to plot the results
+    # plot_experiment_results()
