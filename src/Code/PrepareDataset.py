@@ -740,6 +740,92 @@ def regularization_strengths(train_list,
     plt.savefig(result_file)
 
 
+def plot_experiment_results2():
+
+    # Prepare data for plotting
+    # accuracies = [
+    #     acc_no_hidden_layer, acc_single_hidden_layer, acc_double_hidden_layer,
+    #     acc_double_hidden_layer_relu, acc_double_hidden_layer_leaky_relu, acc_double_hidden_layer_tanh,
+    #     acc_double_hidden_layer_L1, acc_double_hidden_layer_L2,
+    #     acc_double_hidden_layer_unnormalized,
+    #     acc_double_hidden_layer_L1_128, acc_double_hidden_layer_L2_128
+    # ]
+    # print("\nAccuracies: ", accuracies)
+    # recalls = [
+    #     recall_no_hidden_layer, recall_single_hidden_layer, recall_double_hidden_layer,
+    #     recall_double_hidden_layer_relu, recall_double_hidden_layer_leaky_relu, recall_double_hidden_layer_tanh,
+    #     recall_double_hidden_layer_L1, recall_double_hidden_layer_L2,
+    #     recall_double_hidden_layer_unnormalized,
+    #     recall_double_hidden_layer_L1_128, recall_double_hidden_layer_L2_128
+    # ]
+    # print("\nRecalls: ", recalls)
+
+    # times = [
+    #     diff_no_hidden_layer, diff_single_hidden_layer, diff_double_hidden_layer,
+    #     diff_double_hidden_layer_relu, diff_double_hidden_layer_leaky_relu, diff_double_hidden_layer_tanh,
+    #     diff_time_double_hidden_layer_L1, diff_time_double_hidden_layer_L2,
+    #     diff_time_double_hidden_layer_unnormalized,
+    #     diff_time_double_hidden_layer_L1_128, diff_time_double_hidden_layer_L2_128
+    # ]
+    # print("\nTimes: ", times)
+    
+    
+    accuracies =  [0.5736303296208798, 0.5757678029024638, 0.6261109236134549, 
+                  0.6641916976037799, 0.7037349533130836, 0.3603892451344358,
+                  0.37867026662166725, 0.058274271571605356, 0.58274271571605356, 0.6024862189222635]
+
+    recalls =  [0.5915649545858628, 0.5029121421372813, 0.49398537681332133, 
+               0.7164147871521428, 0.7096958813979438, 0.1658771369181194, 
+               0.39778006554556067, 0.0052976610519641235, 0.47976610519641235, 0.5311028306470705]
+
+    times =  [0.008588075637817383, 0.05878615379333496, 38.96800422668457,
+             45.72416090965271, 37.243982553482056, 16.265174865722656, 27.940442085266113, 
+             39.24720788002014, 246.69194626808167, 248.51464748382568]
+
+
+    labels = [
+        "No Hidden Layer (ReLU)", "Single Hidden Layer (ReLU)", "Double Hidden Layer (ReLU)" , 
+        "Double Hidden Layer (Leaky ReLU)", "Double Hidden Layer (Tanh)",
+        "Double Hidden Layer (ReLU, L1 reg.)", "Double Hidden Layer (ReLU, L2 reg.)",
+        "Double Hidden Layer Unnormalized (ReLU)",
+        "Double Hidden Layer (128x128, L1 reg. ReLU)", "Double Hidden Layer (128x128, L2 reg. ReLU)"
+    ]
+
+    # Create scatter plot with color representing time
+    plt.figure(figsize=(12, 8))
+    scatter = plt.scatter(recalls, accuracies, c=times, cmap='viridis', s=100, edgecolors='k')
+
+    # Add color bar
+    cbar = plt.colorbar(scatter)
+    cbar.set_label('Time (s)')
+
+    # Add labels for each point
+    for i in range(len(accuracies)):
+        plt.text(recalls[i], accuracies[i], labels[i], fontsize=9, ha='right')
+
+    plt.xlabel("Recall", fontsize=12, fontweight='bold', labelpad=10)
+    plt.ylabel("Accuracy", fontsize=12, fontweight='bold', labelpad=10)
+    plt.title("Accuracy vs Recall for Different MLP Models\n(Color represents Time)", fontsize=14, fontweight='bold',
+              pad=20)
+
+    plt.grid(True, which='major', linestyle='-', linewidth=0.7, alpha=0.8)
+    plt.grid(True, which='minor', linestyle='--', linewidth=0.5, alpha=0.5)
+
+    plt.xticks(fontsize=10)
+    plt.yticks(fontsize=10)
+
+    plt.tight_layout(pad=2)
+    plt.gca().set_aspect('auto')
+
+    # Save the plot
+    result_folder = "../Results"
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+
+    result_file = os.path.join(result_folder, "accuracy_vs_recall_scatter_plot2.png")
+    plt.savefig(result_file)
+
+
 def plot_experiment_results():
     # Experiment #1
     (
@@ -875,13 +961,21 @@ def plot_experiment_results():
     plt.savefig(result_file)
 
 
+
 def plot_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label):
-    hidden_layers = [1, 2, 3, 4, 5]
+    hidden_layers = [1, 2, 3, 4, 5, 6, 7]
     tanh_accuracies = {'train': [], 'test': []}
     epochs=10
     leaky_relu_accuracies = {'train': [], 'test': []}
-    hidden_nodes = [[256], [256, 256], [256, 256, 256], [256, 256, 256, 256], [256, 256, 256, 256, 256], [256, 256, 256, 256,256]]
-
+    hidden_nodes = [
+        [256], 
+        [256, 256], 
+        [256, 256, 256], 
+        [256, 256, 256, 256], 
+        [256, 256, 256, 256, 256], 
+        [256, 256, 256, 256, 256, 256], 
+        [256, 256, 256, 256, 256, 256, 256]
+    ]
     for idx, num_hidden_layers in enumerate(hidden_layers):
         # Create and train model with Tanh activation
         model_tanh = create_mlp_with_double_hidden_layer_of_256_and_tanh_activation(
@@ -943,11 +1037,19 @@ def plot_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, t
     plt.savefig(result_file)
 
 def plot_recall_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label):
-    hidden_layers = [1, 2, 3, 4, 5]
+    hidden_layers = [1, 2, 3, 4, 5, 6, 7]
     epochs = 10
     tanh_recalls = {'train': [], 'test': []}
     leaky_relu_recalls = {'train': [], 'test': []}
-    hidden_nodes = [[256], [256, 256], [256, 256, 256], [256, 256, 256, 256], [256, 256, 256, 256, 256], [256, 256, 256, 256, 256]]
+    hidden_nodes = [
+        [256], 
+        [256, 256], 
+        [256, 256, 256], 
+        [256, 256, 256, 256], 
+        [256, 256, 256, 256, 256], 
+        [256, 256, 256, 256, 256, 256], 
+        [256, 256, 256, 256, 256, 256, 256]
+    ]
 
     for idx, num_hidden_layers in enumerate(hidden_layers):
         # Create and train model with Tanh activation
@@ -1103,5 +1205,5 @@ if __name__ == "__main__":
     plot_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
     plot_recall_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
     # # Call the function to plot the results
-    #plot_experiment_results()
+    plot_experiment_results2()
 
