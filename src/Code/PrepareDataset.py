@@ -327,12 +327,12 @@ def compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
     """
     mlp_double_hidden_layer_L1 = (
         create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1(
-            input_size
+            input_size, epochs=2, batch_size=16, learning_rate=1e-2, bias=True, regularization_param=1e-1
         )
     )
     mlp_double_hidden_layer_L2 = (
         create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2(
-            input_size
+            input_size,output_size=11, epochs=3, batch_size=16,learning_rate=1e-3, bias=True, regularization_param=1e-2
         )
     )
 
@@ -362,6 +362,7 @@ def compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
     acc_double_hidden_layer_L2 = mlp_double_hidden_layer_L2.evaluate_acc(
         y_pred_double_hidden_layer_L2, test_label
     )
+
     recall_double_hidden_layer_L2 = mlp_double_hidden_layer_L2.evaluate_recall(
         y_pred_double_hidden_layer_L2, test_label
     )
@@ -820,7 +821,7 @@ def plot_experiment_results():
         recall_double_hidden_layer_unnormalized,
         recall_double_hidden_layer_L1_128, recall_double_hidden_layer_L2_128
     ]
-    print("\nRecalls: ", accuracies)
+    print("\nRecalls: ", recalls)
 
     times = [
         diff_no_hidden_layer, diff_single_hidden_layer, diff_double_hidden_layer,
@@ -870,7 +871,142 @@ def plot_experiment_results():
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
 
-    result_file = os.path.join(result_folder, "accuracy_vs_recall_scatter_plot.png")
+    result_file = os.path.join(result_folder, "accuracy_vs_recall_scatter_plot2.png")
+    plt.savefig(result_file)
+
+
+def plot_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label):
+    hidden_layers = [1, 2, 3, 4, 5]
+    tanh_accuracies = {'train': [], 'test': []}
+    epochs=10
+    leaky_relu_accuracies = {'train': [], 'test': []}
+    hidden_nodes = [[256], [256, 256], [256, 256, 256], [256, 256, 256, 256], [256, 256, 256, 256, 256], [256, 256, 256, 256,256]]
+
+    for idx, num_hidden_layers in enumerate(hidden_layers):
+        # Create and train model with Tanh activation
+        model_tanh = create_mlp_with_double_hidden_layer_of_256_and_tanh_activation(
+            number_of_hidden_layers=num_hidden_layers, hidden_layers=hidden_nodes[idx], epochs=epochs)
+        model_tanh.fit(train_list, train_label)
+
+        # Evaluate training accuracy
+        y_train_pred_tanh = model_tanh.predict(train_list)
+        train_accuracy_tanh = model_tanh.evaluate_acc(train_label, y_train_pred_tanh)
+        tanh_accuracies['train'].append(train_accuracy_tanh)
+
+        # Evaluate test accuracy
+        y_test_pred_tanh = model_tanh.predict(test_list)
+        test_accuracy_tanh = model_tanh.evaluate_acc(test_label, y_test_pred_tanh)
+        tanh_accuracies['test'].append(test_accuracy_tanh)
+
+        # Create and train model with Leaky ReLU activation
+        model_leaky_relu = create_mlp_with_double_hidden_layer_of_256_units_and_leaky_ReLU_activation(
+            number_of_hidden_layers=num_hidden_layers, hidden_layers=hidden_nodes[idx], epochs=epochs)
+        model_leaky_relu.fit(train_list, train_label)
+
+        # Evaluate training accuracy
+        y_train_pred_leaky_relu = model_leaky_relu.predict(train_list)
+        train_accuracy_leaky_relu = model_leaky_relu.evaluate_acc(train_label, y_train_pred_leaky_relu)
+        leaky_relu_accuracies['train'].append(train_accuracy_leaky_relu)
+
+        # Evaluate test accuracy
+        y_test_pred_leaky_relu = model_leaky_relu.predict(test_list)
+        test_accuracy_leaky_relu = model_leaky_relu.evaluate_acc(test_label, y_test_pred_leaky_relu)
+        leaky_relu_accuracies['test'].append(test_accuracy_leaky_relu)
+
+    # Plot the results
+    plt.figure(figsize=(10, 6))
+
+    # Tanh accuracies
+    plt.plot(hidden_layers, tanh_accuracies['train'], label='Tanh Train', marker='o')
+    plt.plot(hidden_layers, tanh_accuracies['test'], label='Tanh Test', linestyle='--', marker='o')
+
+    # Leaky ReLU accuracies
+    plt.plot(hidden_layers, leaky_relu_accuracies['train'], label='Leaky ReLU Train', marker='o')
+    plt.plot(hidden_layers, leaky_relu_accuracies['test'], label='Leaky ReLU Test', linestyle='--', marker='o')
+
+    # Set a larger figure size for better visibility
+    plt.xlabel('Number of Hidden Layers', fontsize=12)  # Increase font size for readability
+    plt.ylabel('Accuracy', fontsize=12)
+    plt.title('Accuracy vs Number of Hidden Layers for Tanh and Leaky ReLU', fontsize=14, fontweight='bold')  # Bold and larger font
+    plt.legend(loc='best', fontsize=10)  # Adjust legend placement and font size
+    plt.grid(True, linestyle='--', alpha=0.7)  # Add dashed grid lines with transparency
+    plt.xticks(fontsize=10)  # Set font size for x-axis tick labels
+    plt.yticks(fontsize=10)  # Set font size for y-axis tick labels
+    plt.tight_layout()  # Ensure no elements are cut off
+
+    # Save the plot
+    result_folder = "../Results"
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+
+    result_file = os.path.join(result_folder, "accuracy_vs_hidden_layers_tanh_leaky_relu.png")
+    plt.savefig(result_file)
+
+def plot_recall_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label):
+    hidden_layers = [1, 2, 3, 4, 5]
+    epochs = 10
+    tanh_recalls = {'train': [], 'test': []}
+    leaky_relu_recalls = {'train': [], 'test': []}
+    hidden_nodes = [[256], [256, 256], [256, 256, 256], [256, 256, 256, 256], [256, 256, 256, 256, 256], [256, 256, 256, 256, 256]]
+
+    for idx, num_hidden_layers in enumerate(hidden_layers):
+        # Create and train model with Tanh activation
+        model_tanh = create_mlp_with_double_hidden_layer_of_256_and_tanh_activation(
+            number_of_hidden_layers=num_hidden_layers, hidden_layers=hidden_nodes[idx], epochs=epochs)
+        model_tanh.fit(train_list, train_label)
+
+        # Evaluate training recall
+        y_train_pred_tanh = model_tanh.predict(train_list)
+        train_recall_tanh = model_tanh.evaluate_recall(train_label, y_train_pred_tanh)
+        tanh_recalls['train'].append(train_recall_tanh)
+
+        # Evaluate test recall
+        y_test_pred_tanh = model_tanh.predict(test_list)
+        test_recall_tanh = model_tanh.evaluate_recall(test_label, y_test_pred_tanh)
+        tanh_recalls['test'].append(test_recall_tanh)
+
+        # Create and train model with Leaky ReLU activation
+        model_leaky_relu = create_mlp_with_double_hidden_layer_of_256_units_and_leaky_ReLU_activation(
+            number_of_hidden_layers=num_hidden_layers, hidden_layers=hidden_nodes[idx], epochs=epochs)
+        model_leaky_relu.fit(train_list, train_label)
+
+        # Evaluate training recall
+        y_train_pred_leaky_relu = model_leaky_relu.predict(train_list)
+        train_recall_leaky_relu = model_leaky_relu.evaluate_recall(train_label, y_train_pred_leaky_relu)
+        leaky_relu_recalls['train'].append(train_recall_leaky_relu)
+
+        # Evaluate test recall
+        y_test_pred_leaky_relu = model_leaky_relu.predict(test_list)
+        test_recall_leaky_relu = model_leaky_relu.evaluate_recall(test_label, y_test_pred_leaky_relu)
+        leaky_relu_recalls['test'].append(test_recall_leaky_relu)
+
+    # Plot the results
+    plt.figure(figsize=(10, 6))
+
+    # Tanh recalls
+    plt.plot(hidden_layers, tanh_recalls['train'], label='Tanh Train', marker='o')
+    plt.plot(hidden_layers, tanh_recalls['test'], label='Tanh Test', linestyle='--', marker='o')
+
+    # Leaky ReLU recalls
+    plt.plot(hidden_layers, leaky_relu_recalls['train'], label='Leaky ReLU Train', marker='o')
+    plt.plot(hidden_layers, leaky_relu_recalls['test'], label='Leaky ReLU Test', linestyle='--', marker='o')
+
+    # Set a larger figure size for better visibility
+    plt.xlabel('Number of Hidden Layers', fontsize=12)  # Increase font size for readability
+    plt.ylabel('Recall', fontsize=12)
+    plt.title('Recall vs Number of Hidden Layers for Tanh and Leaky ReLU', fontsize=14, fontweight='bold')  # Bold and larger font
+    plt.legend(loc='best', fontsize=10)  # Adjust legend placement and font size
+    plt.grid(True, linestyle='--', alpha=0.7)  # Add dashed grid lines with transparency
+    plt.xticks(fontsize=10)  # Set font size for x-axis tick labels
+    plt.yticks(fontsize=10)  # Set font size for y-axis tick labels
+    plt.tight_layout()  # Ensure no elements are cut off
+
+    # Save the plot
+    result_folder = "../Results"
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+
+    result_file = os.path.join(result_folder, "recall_vs_hidden_layers_tanh_leaky_relu.png")
     plt.savefig(result_file)
 
 
@@ -963,5 +1099,9 @@ if __name__ == "__main__":
 
     # regularization_strengths(train_list, train_label, test_list, test_label)
 
+    # Call the function to plot Tanh and Leaky ReLU with extra hidden layers
+    plot_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
+    plot_recall_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
     # # Call the function to plot the results
-    plot_experiment_results()
+    #plot_experiment_results()
+
