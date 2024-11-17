@@ -677,6 +677,101 @@ def plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
     result_file = os.path.join(result_folder, "train_vs_test_accuracy_epoch_sizes.png")
     plt.savefig(result_file)
 
+def plot_accuracy_for_epochs(
+    train_list,
+    train_label,
+    test_list,
+    test_label,
+    epoch_sizes,
+    train_list_128,
+    train_label_128,
+    test_list_128,
+    test_label_128,
+    output_dir="../Results",
+):
+    """
+    Generates individual plots for each model:
+    1. Train vs. Test Accuracy for different epoch sizes.
+
+    Args:
+    train_list (np.ndarray): Training data.
+    train_label (np.ndarray): Training labels.
+    test_list (np.ndarray): Testing data.
+    test_label (np.ndarray): Testing labels.
+    learning_rates (list): List of learning rates to evaluate.
+    batch_sizes (list): List of batch sizes to evaluate.
+    epoch_sizes (list): List of epoch sizes to evaluate.
+    output_dir (str): Directory where the plots will be saved.
+    """
+    models = {
+        #"No Hidden Layer": create_mlp_with_no_hidden_layer,
+        #"1 Hidden Layer (256 units)": create_mlp_with_single_hidden_layer_of_256_units,
+        #"2 Hidden Layers (256 units)": create_mlp_with_double_hidden_layer_of_256_units,
+        "2 Layers + Leaky ReLU": create_mlp_with_double_hidden_layer_of_256_units_and_leaky_ReLU_activation,
+        "2 Layers + Tanh": create_mlp_with_double_hidden_layer_of_256_and_tanh_activation,
+        #"2 Layers + ReLU + L1 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1,
+        #"2 Layers + ReLU + L2 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2,
+    }
+    
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    for model_name, create_model in models.items():
+        train_accuracies = []
+        test_accuracies = []
+
+        for epochs in epoch_sizes:
+            if "128" in model_name:
+                model = create_model(learning_rate=0.01, batch_size=16, epochs=epochs, input_size=128 * 128)
+                model.fit(train_list_128, train_label_128)
+
+                # Evaluate training accuracy
+                y_train_pred = model.predict(train_list_128)
+                train_accuracy = model.evaluate_acc(train_label_128, y_train_pred)
+                train_accuracies.append(train_accuracy)
+
+                # Evaluate test accuracy
+                y_test_pred = model.predict(test_list_128)
+                test_accuracy = model.evaluate_acc(test_label_128, y_test_pred)
+                test_accuracies.append(test_accuracy)
+            else:
+                model = create_model(learning_rate=0.01, batch_size=16, epochs=epochs)
+                model.fit(train_list, train_label)
+
+                # Evaluate training accuracy
+                y_train_pred = model.predict(train_list)
+                train_accuracy = model.evaluate_acc(train_label, y_train_pred)
+                train_accuracies.append(train_accuracy)
+
+                # Evaluate test accuracy
+                y_test_pred = model.predict(test_list)
+                test_accuracy = model.evaluate_acc(test_label, y_test_pred)
+                test_accuracies.append(test_accuracy)
+
+        # Plot train and test accuracy for this model
+        plt.figure(figsize=(16, 10))
+        plt.plot(epoch_sizes, train_accuracies, label=f"{model_name} - Train", marker='o')
+        plt.plot(
+            epoch_sizes,
+            test_accuracies,
+            label=f"{model_name} - Test",
+            linestyle="dashed",
+            marker='o'
+        )
+
+        plt.xlabel("Epoch Size")
+        plt.ylabel("Accuracy")
+        plt.title(
+            f"Train vs. Test Accuracy for {model_name} (Batch Size = 16, Learning Rate = 0.01)"
+        )
+        plt.legend()
+        plt.grid(True)
+        # Save the plot
+        result_file = os.path.join(output_dir, f"train_vs_test_accuracy_epochs_{model_name.replace(' ', '_')}.png")
+        plt.savefig(result_file)
+        plt.close()
+    
+
 def regularization_strengths(train_list,
                              train_label,
                              test_list,
@@ -1129,33 +1224,33 @@ if __name__ == "__main__":
         prepare_normalized_dataset(size=128)
     )
 
-    # Experiment #1
-    (
-        acc_no_hidden_layer,
-        diff_no_hidden_layer,
-        recall_no_hidden_layer,
-        acc_single_hidden_layer,
-        diff_single_hidden_layer,
-        recall_single_hidden_layer,
-        acc_double_hidden_layer,
-        diff_double_hidden_layer,
-        recall_double_hidden_layer,
-    ) = compare_basic_mlp_models(train_list, train_label, test_list, test_label)
+    # # Experiment #1
+    # (
+    #     acc_no_hidden_layer,
+    #     diff_no_hidden_layer,
+    #     recall_no_hidden_layer,
+    #     acc_single_hidden_layer,
+    #     diff_single_hidden_layer,
+    #     recall_single_hidden_layer,
+    #     acc_double_hidden_layer,
+    #     diff_double_hidden_layer,
+    #     recall_double_hidden_layer,
+    # ) = compare_basic_mlp_models(train_list, train_label, test_list, test_label)
 
-    # Experiment #2
-    (
-        acc_double_hidden_layer_relu,
-        diff_double_hidden_layer_relu,
-        recall_double_hidden_layer_relu,
-        acc_double_hidden_layer_leaky_relu,
-        diff_double_hidden_layer_leaky_relu,
-        recall_double_hidden_layer_leaky_relu,
-        acc_double_hidden_layer_tanh,
-        diff_double_hidden_layer_tanh,
-        recall_double_hidden_layer_tanh,
-    ) = compare_activations_for_256_double_hidden_layers(
-        train_list, train_label, test_list, test_label
-    )
+    # # Experiment #2
+    # (
+    #     acc_double_hidden_layer_relu,
+    #     diff_double_hidden_layer_relu,
+    #     recall_double_hidden_layer_relu,
+    #     acc_double_hidden_layer_leaky_relu,
+    #     diff_double_hidden_layer_leaky_relu,
+    #     recall_double_hidden_layer_leaky_relu,
+    #     acc_double_hidden_layer_tanh,
+    #     diff_double_hidden_layer_tanh,
+    #     recall_double_hidden_layer_tanh,
+    # ) = compare_activations_for_256_double_hidden_layers(
+    #     train_list, train_label, test_list, test_label
+    # )
 
     # # Experiment #3
     # (
@@ -1201,7 +1296,11 @@ if __name__ == "__main__":
     #     train_list, train_label, test_list, test_label, learning_rates, batch_sizes, epoch_sizes,
     #     train_list_128, train_label_128, test_list_128, test_label_128
     # )
-
+    
+    epoch_sizes = [1,2,5,10,20,50,100]
+    plot_accuracy_for_epochs(
+        train_list, train_label, test_list, test_label, epoch_sizes, train_list_128, train_label_128, test_list_128, test_label_128
+    )
     # regularization_strengths(train_list, train_label, test_list, test_label)
 
     # Call the function to plot Tanh and Leaky ReLU with extra hidden layers
