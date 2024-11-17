@@ -143,29 +143,31 @@ def compare_basic_mlp_models(train_list, train_label, test_list, test_label):
     mlp_no_hidden_layer = create_mlp_with_no_hidden_layer()
     mlp_single_hidden_layer = create_mlp_with_single_hidden_layer_of_256_units()
     mlp_double_hidden_layer = create_mlp_with_double_hidden_layer_of_256_units()
-
-    mlp_no_hidden_layer.fit(train_list, train_label)
-    mlp_single_hidden_layer.fit(train_list, train_label)
-    mlp_double_hidden_layer.fit(train_list, train_label)
-
+    
     start_time_no_hidden_layer = time.time()
-    y_pred_no_hidden_layer = mlp_no_hidden_layer.predict(test_list)
+    mlp_no_hidden_layer.fit(train_list, train_label)
     end_time_no_hidden_layer = time.time()
     diff_no_hidden_layer = end_time_no_hidden_layer - start_time_no_hidden_layer
-
+    
     start_time_single_hidden_layer = time.time()
-    y_pred_single_hidden_layer = mlp_single_hidden_layer.predict(test_list)
+    mlp_single_hidden_layer.fit(train_list, train_label)
     end_time_single_hidden_layer = time.time()
     diff_single_hidden_layer = (
             end_time_single_hidden_layer - start_time_single_hidden_layer
     )
 
     start_time_double_hidden_layer = time.time()
-    y_pred_double_hidden_layer = mlp_double_hidden_layer.predict(test_list)
+    mlp_double_hidden_layer.fit(train_list, train_label)
     end_time_double_hidden_layer = time.time()
     diff_double_hidden_layer = (
             end_time_double_hidden_layer - start_time_double_hidden_layer
     )
+    
+    
+    y_pred_no_hidden_layer = mlp_no_hidden_layer.predict(test_list)
+    y_pred_single_hidden_layer = mlp_single_hidden_layer.predict(test_list)
+    y_pred_double_hidden_layer = mlp_double_hidden_layer.predict(test_list)
+
 
     acc_no_hidden_layer = mlp_no_hidden_layer.evaluate_acc(
         y_pred_no_hidden_layer, test_label
@@ -208,6 +210,7 @@ def compare_basic_mlp_models(train_list, train_label, test_list, test_label):
         diff_double_hidden_layer,
         recall_double_hidden_layer,
     )
+
 
 
 def compare_activations_for_256_double_hidden_layers(
@@ -1126,33 +1129,33 @@ if __name__ == "__main__":
         prepare_normalized_dataset(size=128)
     )
 
-    # # Experiment #1
-    # (
-    #     acc_no_hidden_layer,
-    #     diff_no_hidden_layer,
-    #     recall_no_hidden_layer,
-    #     acc_single_hidden_layer,
-    #     diff_single_hidden_layer,
-    #     recall_single_hidden_layer,
-    #     acc_double_hidden_layer,
-    #     diff_double_hidden_layer,
-    #     recall_double_hidden_layer,
-    # ) = compare_basic_mlp_models(train_list, train_label, test_list, test_label)
+    # Experiment #1
+    (
+        acc_no_hidden_layer,
+        diff_no_hidden_layer,
+        recall_no_hidden_layer,
+        acc_single_hidden_layer,
+        diff_single_hidden_layer,
+        recall_single_hidden_layer,
+        acc_double_hidden_layer,
+        diff_double_hidden_layer,
+        recall_double_hidden_layer,
+    ) = compare_basic_mlp_models(train_list, train_label, test_list, test_label)
 
-    # # Experiment #2
-    # (
-    #     acc_double_hidden_layer_relu,
-    #     diff_double_hidden_layer_relu,
-    #     recall_double_hidden_layer_relu,
-    #     acc_double_hidden_layer_leaky_relu,
-    #     diff_double_hidden_layer_leaky_relu,
-    #     recall_double_hidden_layer_leaky_relu,
-    #     acc_double_hidden_layer_tanh,
-    #     diff_double_hidden_layer_tanh,
-    #     recall_double_hidden_layer_tanh,
-    # ) = compare_activations_for_256_double_hidden_layers(
-    #     train_list, train_label, test_list, test_label
-    # )
+    # Experiment #2
+    (
+        acc_double_hidden_layer_relu,
+        diff_double_hidden_layer_relu,
+        recall_double_hidden_layer_relu,
+        acc_double_hidden_layer_leaky_relu,
+        diff_double_hidden_layer_leaky_relu,
+        recall_double_hidden_layer_leaky_relu,
+        acc_double_hidden_layer_tanh,
+        diff_double_hidden_layer_tanh,
+        recall_double_hidden_layer_tanh,
+    ) = compare_activations_for_256_double_hidden_layers(
+        train_list, train_label, test_list, test_label
+    )
 
     # # Experiment #3
     # (
@@ -1202,8 +1205,8 @@ if __name__ == "__main__":
     # regularization_strengths(train_list, train_label, test_list, test_label)
 
     # Call the function to plot Tanh and Leaky ReLU with extra hidden layers
-    plot_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
-    plot_recall_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
-    # # Call the function to plot the results
-    plot_experiment_results2()
+    # plot_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
+    # plot_recall_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
+    # # # Call the function to plot the results
+    # plot_experiment_results2()
 
