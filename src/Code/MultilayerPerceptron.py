@@ -14,7 +14,7 @@ class MultilayerPerceptron:
             number_of_hidden_layers: int = 2,
             activation_function: Callable = ReLU,
             learning_rate: float = 0.001,
-            epochs: int = 100,
+            epochs: int = 10,
             batch_size: int = 16,
             bias: bool = True,
             regularization: Regularization = Regularization.NONE,
