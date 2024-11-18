@@ -186,7 +186,7 @@ class MultilayerPerceptron:
             y (numpy.ndarray): True labels of shape (n_samples, n_classes).
         """
         # Perform the training loop
-        for _ in range(self.epochs):
+        for x in range(self.epochs):
             # Shuffle the dataset at the start of each epoch
             indices = np.arange(X.shape[0])
             np.random.shuffle(indices)
@@ -206,6 +206,7 @@ class MultilayerPerceptron:
                 )
                 # Update the weights and biases using the gradients
                 self.update_parameters(weight_gradients, bias_gradients)
+                print("Epoch" + str(x) + "completed")
 
     def predict(self, X):
         """

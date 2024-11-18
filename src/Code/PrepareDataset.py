@@ -475,13 +475,13 @@ def plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
         output_dir (str): Directory where the plots will be saved.
     """
     models = {
-        "No Hidden Layer": create_mlp_with_no_hidden_layer,
-        "1 Hidden Layer (256 units)": create_mlp_with_single_hidden_layer_of_256_units,
-        "2 Hidden Layers (256 units)": create_mlp_with_double_hidden_layer_of_256_units,
-        "2 Layers + Leaky ReLU": create_mlp_with_double_hidden_layer_of_256_units_and_leaky_ReLU_activation,
-        "2 Layers + Tanh": create_mlp_with_double_hidden_layer_of_256_and_tanh_activation,
+        # "No Hidden Layer": create_mlp_with_no_hidden_layer,
+        # "1 Hidden Layer (256 units)": create_mlp_with_single_hidden_layer_of_256_units,
+        # "2 Hidden Layers (256 units)": create_mlp_with_double_hidden_layer_of_256_units,
+        # "2 Layers + Leaky ReLU": create_mlp_with_double_hidden_layer_of_256_units_and_leaky_ReLU_activation,
+        # "2 Layers + Tanh": create_mlp_with_double_hidden_layer_of_256_and_tanh_activation,
         "2 Layers + ReLU + L1 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1,
-        "2 Layers + ReLU + L2 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2,
+        # "2 Layers + ReLU + L2 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2,
         # "Double Layers + Sigmoid": create_mlp_with_double_hidden_layer_of_256_units_and_sigmoid_activation,
         # "Double Layers + ReLU + L1": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1,
         # "Double Layers + ReLU + L2": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2,
@@ -490,7 +490,7 @@ def plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     #
-    # # 1. Plot for Batch Sizes
+    # 1. Plot for Batch Sizes
     # plt.figure(figsize=(16, 10))
     # for model_name, create_model in models.items():
     #     train_accuracies = []
@@ -499,7 +499,7 @@ def plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
     #     for batch_size in batch_sizes:
     #         # Use a fixed learning rate (e.g., 0.01)
     #         if "128" in model_name:
-    #             model = create_model(learning_rate=0.01, epochs=10, batch_size=batch_size, input_size=128*128)
+    #             model = create_model(learning_rate=0.001, epochs=1, batch_size=batch_size, input_size=128*128)
     #             model.fit(train_list_128, train_label_128)
     #
     #             # Evaluate training accuracy
@@ -512,7 +512,7 @@ def plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
     #             test_accuracy = model.evaluate_acc(test_label_128, y_test_pred)
     #             test_accuracies.append(test_accuracy)
     #         else:
-    #             model = create_model(learning_rate=0.01, epochs=10, batch_size=batch_size)
+    #             model = create_model(learning_rate=0.01, epochs=1, batch_size=batch_size)
     #             model.fit(train_list, train_label)
     #
     #             # Evaluate training accuracy
@@ -550,77 +550,17 @@ def plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
     # # Correcting the filename
     # result_file = os.path.join(result_folder, "train_vs_test_accuracy_batch_sizes.png")
     # plt.savefig(result_file)
-    #
-    # 2. Plot for Learning Rates
-    plt.figure(figsize=(16, 10))
-    for model_name, create_model in models.items():
-        train_accuracies = []
-        test_accuracies = []
 
-        for lr in learning_rates:
-            # Use a fixed batch size (e.g., 32)
-            if "128" in model_name:
-                model = create_model(learning_rate=lr, batch_size=16, epochs=10, input_size=128*128)
-
-                model.fit(train_list_128, train_label_128)
-
-                # Evaluate training accuracy
-                y_train_pred = model.predict(train_list_128)
-                train_accuracy = model.evaluate_acc(train_label_128, y_train_pred)
-                train_accuracies.append(train_accuracy)
-
-                # Evaluate test accuracy
-                y_test_pred = model.predict(test_list_128)
-                test_accuracy = model.evaluate_acc(test_label_128, y_test_pred)
-                test_accuracies.append(test_accuracy)
-            else:
-                model = create_model(learning_rate=lr, batch_size=16, epochs=10)
-
-                model.fit(train_list, train_label)
-
-                # Evaluate training accuracy
-                y_train_pred = model.predict(train_list)
-                train_accuracy = model.evaluate_acc(train_label, y_train_pred)
-                train_accuracies.append(train_accuracy)
-
-                # Evaluate test accuracy
-                y_test_pred = model.predict(test_list)
-                test_accuracy = model.evaluate_acc(test_label, y_test_pred)
-                test_accuracies.append(test_accuracy)
-
-        # Plot train and test accuracy for this model
-        plt.plot(learning_rates, train_accuracies, label=f"{model_name} - Train")
-        plt.plot(
-            learning_rates,
-            test_accuracies,
-            label=f"{model_name} - Test",
-            linestyle="dashed",
-        )
-
-    plt.xscale("log")  # Log scale for learning rates
-    plt.xlabel("Learning Rate")
-    plt.ylabel("Accuracy")
-    plt.title("Train vs. Test Accuracy for Different Learning Rates (Batch Size = 16, Epochs = 10)")
-    plt.legend()
-    plt.grid(True)
-    # Save the plot
-    result_folder = "../Results"
-    if not os.path.exists(result_folder):
-        os.makedirs(result_folder)
-
-    # Correcting the filename
-    result_file = os.path.join(result_folder, "train_vs_test_accuracy_learning_rates.png")
-    plt.savefig(result_file)
-
-    # # 3. Plot for Epoch Sizes
+    # # 2. Plot for Learning Rates
     # plt.figure(figsize=(16, 10))
     # for model_name, create_model in models.items():
     #     train_accuracies = []
     #     test_accuracies = []
     #
-    #     for epochs in epoch_sizes:
+    #     for lr in learning_rates:
+    #         # Use a fixed batch size (e.g., 32)
     #         if "128" in model_name:
-    #             model = create_model(learning_rate=0.01, batch_size=16, epochs=epochs, input_size=128 * 128)
+    #             model = create_model(learning_rate=lr, batch_size=16, epochs=1, input_size=128*128)
     #
     #             model.fit(train_list_128, train_label_128)
     #
@@ -634,7 +574,7 @@ def plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
     #             test_accuracy = model.evaluate_acc(test_label_128, y_test_pred)
     #             test_accuracies.append(test_accuracy)
     #         else:
-    #             model = create_model(learning_rate=0.01, batch_size=16, epochs=epochs)
+    #             model = create_model(learning_rate=lr, batch_size=16, epochs=1)
     #
     #             model.fit(train_list, train_label)
     #
@@ -649,19 +589,18 @@ def plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
     #             test_accuracies.append(test_accuracy)
     #
     #     # Plot train and test accuracy for this model
-    #     plt.plot(epoch_sizes, train_accuracies, label=f"{model_name} - Train")
+    #     plt.plot(learning_rates, train_accuracies, label=f"{model_name} - Train")
     #     plt.plot(
-    #         epoch_sizes,
+    #         learning_rates,
     #         test_accuracies,
     #         label=f"{model_name} - Test",
     #         linestyle="dashed",
     #     )
     #
-    # plt.xlabel("Epoch Size")
+    # plt.xscale("log")  # Log scale for learning rates
+    # plt.xlabel("Learning Rate")
     # plt.ylabel("Accuracy")
-    # plt.title(
-    #     "Train vs. Test Accuracy for Different Epoch Sizes (Batch Size = 16, Learning Rate = 0.01)"
-    # )
+    # plt.title("Train vs. Test Accuracy for Different Learning Rates (Batch Size = 16, Epochs = 10)")
     # plt.legend()
     # plt.grid(True)
     # # Save the plot
@@ -670,8 +609,69 @@ def plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
     #     os.makedirs(result_folder)
     #
     # # Correcting the filename
-    # result_file = os.path.join(result_folder, "train_vs_test_accuracy_epoch_sizes.png")
+    # result_file = os.path.join(result_folder, "train_vs_test_accuracy_learning_rates.png")
     # plt.savefig(result_file)
+
+    # 3. Plot for Epoch Sizes
+    plt.figure(figsize=(16, 10))
+    for model_name, create_model in models.items():
+        train_accuracies = []
+        test_accuracies = []
+
+        for epochs in epoch_sizes:
+            if "128" in model_name:
+                model = create_model(learning_rate=0.01, batch_size=16, epochs=epochs, input_size=128 * 128)
+
+                model.fit(train_list_128, train_label_128)
+
+                # Evaluate training accuracy
+                y_train_pred = model.predict(train_list_128)
+                train_accuracy = model.evaluate_acc(train_label_128, y_train_pred)
+                train_accuracies.append(train_accuracy)
+
+                # Evaluate test accuracy
+                y_test_pred = model.predict(test_list_128)
+                test_accuracy = model.evaluate_acc(test_label_128, y_test_pred)
+                test_accuracies.append(test_accuracy)
+            else:
+                model = create_model(learning_rate=0.01, batch_size=16, epochs=epochs)
+
+                model.fit(train_list, train_label)
+
+                # Evaluate training accuracy
+                y_train_pred = model.predict(train_list)
+                train_accuracy = model.evaluate_acc(train_label, y_train_pred)
+                train_accuracies.append(train_accuracy)
+
+                # Evaluate test accuracy
+                y_test_pred = model.predict(test_list)
+                test_accuracy = model.evaluate_acc(test_label, y_test_pred)
+                test_accuracies.append(test_accuracy)
+
+        # Plot train and test accuracy for this model
+        plt.plot(epoch_sizes, train_accuracies, label=f"{model_name} - Train")
+        plt.plot(
+            epoch_sizes,
+            test_accuracies,
+            label=f"{model_name} - Test",
+            linestyle="dashed",
+        )
+
+    plt.xlabel("Epoch Size")
+    plt.ylabel("Accuracy")
+    plt.title(
+        "Train vs. Test Accuracy for Different Epoch Sizes"
+    )
+    plt.legend()
+    plt.grid(True)
+    # Save the plot
+    result_folder = "../Results"
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+
+    # Correcting the filename
+    result_file = os.path.join(result_folder, "train_vs_test_accuracy_epoch_sizes.png")
+    plt.savefig(result_file)
 
 def regularization_strengths(train_list,
                              train_label,
@@ -953,9 +953,9 @@ if __name__ == "__main__":
     # )
 
     # Experiment #6 - Train vs. Test Accuracy for Learning Rates
-    learning_rates = [1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1]
+    learning_rates = [1e-4, 1e-3, 1e-2,1e-1]
     batch_sizes = [8, 16, 32, 64, 128]
-    epoch_sizes = [1,5, 10, 15,20,25]
+    epoch_sizes = [1,2,5, 10, 15]
     plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
         train_list, train_label, test_list, test_label, learning_rates, batch_sizes, epoch_sizes,
         train_list_128, train_label_128, test_list_128, test_label_128
