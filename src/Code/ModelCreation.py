@@ -1,7 +1,7 @@
 import numpy as np  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
 from MultilayerPerceptron import MultilayerPerceptron
-from utils import ReLU, leaky_ReLU, tanh, sigmoid
+from utils import ReLU, leaky_ReLU, tanh, sigmoid, softmax
 from RegularizationType import Regularization
 
 
@@ -178,6 +178,62 @@ def create_mlp_with_double_hidden_layer_of_256_units_and_sigmoid_activation(
     )
     return mlp
 
+def create_mlp_with_double_hidden_layer_of_256_units_and_sigmoid_activation(
+    input_size=28 * 28,
+    output_size=11,
+    epochs=5,
+    batch_size=16,
+    learning_rate=0.01,
+    bias=True,
+):
+    """
+    Creates a model with two hidden layers of 256 units each and sigmoid activation function.
+
+    Returns:
+        MultilayerPerceptron: The MLP model with two hidden layers and sigmoid activation.
+    """
+
+    mlp = MultilayerPerceptron(
+        input_size=input_size,
+        number_of_hidden_layers=2,
+        output_size=output_size,
+        hidden_layers=[256, 256],
+        activation_function=sigmoid,
+        epochs=epochs,
+        batch_size=batch_size,
+        learning_rate=learning_rate,
+        bias=bias,
+    )
+    return mlp
+
+
+def create_mlp_with_double_hidden_layer_of_256_units_and_softmax_activation(
+    input_size=28 * 28,
+    output_size=11,
+    epochs=5,
+    batch_size=16,
+    learning_rate=0.001,
+    bias=True,
+):
+    """
+    Creates a model with two hidden layers of 256 units each and softmax activation function.
+
+    Returns:
+        MultilayerPerceptron: The MLP model with two hidden layers and softmax activation.
+    """
+
+    mlp = MultilayerPerceptron(
+        input_size=input_size,
+        number_of_hidden_layers=2,
+        output_size=output_size,
+        hidden_layers=[256, 256],
+        activation_function=softmax,
+        epochs=epochs,
+        batch_size=batch_size,
+        learning_rate=learning_rate,
+        bias=bias,
+    )
+    return mlp
 
 def create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1(
     input_size=28 * 28,
