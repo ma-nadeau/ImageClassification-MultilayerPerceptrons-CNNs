@@ -23,7 +23,7 @@ This project emphasizes the importance of hyperparameter optimization (e.g., lea
 
 #### Convolutional Neural Network
 1. Navigate to the `src/CNN` folder.
-2. Run the `CNN_28_128.py` file.
+2. Run the `CNN_28_128.py` and `cnn_hypara_exp.py` files.
 
 #### Resnet
 1. Navigate to the `src/MobileNet` folder.
