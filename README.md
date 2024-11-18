@@ -8,12 +8,16 @@ Created by [Marc-Antoine Nadeau](https://github.com/ma-nadeau), [Jessie Kurtz](h
 
 The complexity of modern medical imaging datasets has driven the need for advanced machine learning models capable of achieving accurate and efficient classification. This repository explores the OrganAMNIST dataset, a challenging benchmark derived from medical imagery, to evaluate the effectiveness of different neural network architectures for organ classification.
 
+This project emphasizes the importance of hyperparameter optimization (e.g., learning rate, batch size, and regularization strength) and explores the trade-offs between computational efficiency and performance.
+
 We investigate and compare the performance of:
 
-Multilayer Perceptrons (MLPs): Foundational models in machine learning, which struggle with capturing spatial dependencies in image data.
-Convolutional Neural Networks (CNNs): Specialized for spatial feature extraction, leveraging convolutional layers to create hierarchical representations.
-Pre-trained MobileNetV2: A lightweight architecture that transfers knowledge from large-scale datasets, achieving high accuracy with reduced training time.
-This project emphasizes the importance of hyperparameter optimization (e.g., learning rate, batch size, and regularization strength) and explores the trade-offs between computational efficiency and performance.
+### Multilayer Perceptrons (MLPs): 
+Foundational models in machine learning, which struggle with capturing spatial dependencies in image data.
+### Convolutional Neural Networks (CNNs): 
+Specialized for spatial feature extraction, leveraging convolutional layers to create hierarchical representations.
+### Pre-trained MobileNetV2: 
+A lightweight architecture that transfers knowledge from large-scale datasets, achieving high accuracy with reduced training time.
 
 ## File Structure  
 ### How to Run
@@ -39,13 +43,13 @@ Any resulting figures/graphs will be saved in their respective folders:
 
 
 ## Key Features
-Dataset:
+### Dataset:
 
 - OrganAMNIST: A medical imaging dataset with grayscale images of 11 organs, resized to 28x28 pixels and 128x128 pixels for efficient experimentation.
 - Dataset split includes training and test sets for rigorous evaluation.
 - Normalization was done on the data using the Z-score technique seen in class.
   
-Architectures Studied:
+### Architectures Studied:
 
 - MLPs: Baseline models that highlight the limitations of fully connected layers for image data.
 - CNNs: Tested with various configurations (e.g., layer depth, kernel size, pooling strategies) to optimize performance.
@@ -54,7 +58,7 @@ Architectures Studied:
 Hyperparameter Optimization:
 - Investigates learning rate, batch size, and regularization techniques (L1 and L2) to balance accuracy and computational cost.
   
-Performance Metrics:
+### Performance Metrics:
 
 - Accuracy and Recall: For comparing model effectiveness.
 - Training Time: For assessing computational efficiency.
