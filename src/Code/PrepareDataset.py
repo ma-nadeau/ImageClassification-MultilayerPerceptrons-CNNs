@@ -710,7 +710,9 @@ def plot_accuracy_for_epochs(
         #"2 Layers + Leaky ReLU": create_mlp_with_double_hidden_layer_of_256_units_and_leaky_ReLU_activation,
         #"2 Layers + Tanh": create_mlp_with_double_hidden_layer_of_256_and_tanh_activation,
         "2 Layers + ReLU + L1 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1,
-        "2 Layers + ReLU + L2 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2,
+        # "2 Layers + ReLU + L2 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2,
+        # "Double Layers + ReLU + L1": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1_28_by_28,
+        # "Double Layers + ReLU + L2": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2_28_by_28,
     }
     
     if not os.path.exists(output_dir):
@@ -722,7 +724,7 @@ def plot_accuracy_for_epochs(
 
         for epochs in epoch_sizes:
             if "128" in model_name:
-                model = create_model(learning_rate=0.01, batch_size=16, epochs=epochs, input_size=128 * 128)
+                model = create_model(learning_rate=0.001, batch_size=16, epochs=epochs, input_size=128 * 128)
                 model.fit(train_list_128, train_label_128)
 
                 # Evaluate training accuracy
@@ -1481,21 +1483,21 @@ if __name__ == "__main__":
     #     train_list_128, train_label_128, test_list_128, test_label_128
     # )
     
-    epoch_sizes = [1,2,5,8]
+    epoch_sizes = [1,2,5,10,15]
     plot_accuracy_for_epochs(
         train_list, train_label, test_list, test_label, epoch_sizes, train_list_128, train_label_128, test_list_128, test_label_128
     )
     # regularization_strengths(train_list, train_label, test_list, test_label)
 
-    # Call the function to plot Tanh and Leaky ReLU with increasing hidden layers and width
+    # # Call the function to plot Tanh and Leaky ReLU with increasing hidden layers and width
     # plot_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
     # plot_recall_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
     # plot_tanh_and_leaky_relu_with_increasing_width(train_list, train_label, test_list, test_label)
     # plot_recall_tanh_and_leaky_relu_with_increasing_width(train_list, train_label, test_list, test_label)
     
-    # # # Call the function to plot the results
+    # # Call the function to plot the results
     # plot_experiment_results2()
     
-    # Sigmoid and Softmax
+    # # Sigmoid and Softmax
     #compare_sigmoid_and_softmax(train_list, train_label, test_list, test_label)
 

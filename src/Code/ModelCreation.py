@@ -240,9 +240,9 @@ def create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1(
     output_size=11,
     epochs=5,
     batch_size=16,
-    learning_rate=1e-2,
+    learning_rate=1e-3,
     bias=True,
-    regularization_param=1e-1,
+    regularization_param=1e-2,
 ):
     """
     Creates a model with two hidden layers of 256 units each, Leaky ReLU activation function, and L1 regularization.
@@ -274,9 +274,77 @@ def create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2(
     output_size=11,
     epochs=5,
     batch_size=16,
-    learning_rate=1e-2,
+    learning_rate=1e-3,
     bias=True,
     regularization_param=1e-2,
+):
+    """
+    Creates a model with two hidden layers of 256 units each, Leaky ReLU activation function, and L2 regularization.
+
+    Returns:
+        MultilayerPerceptron: The MLP model with two hidden layers, Leaky ReLU activation, and L2 regularization.
+    """
+    print(
+        f"epoch: {epochs} batch size: {batch_size}, learning rate: {learning_rate}, regularization_param: {regularization_param}"
+    )
+
+    mlp = MultilayerPerceptron(
+        input_size=input_size,
+        number_of_hidden_layers=2,
+        output_size=output_size,
+        hidden_layers=[256, 256],
+        activation_function=ReLU,
+        epochs=epochs,
+        batch_size=batch_size,
+        learning_rate=learning_rate,
+        bias=bias,
+        regularization=Regularization.L2,
+        regularization_param=regularization_param,
+    )
+    return mlp
+
+def create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1_28_by_28(
+    input_size=28 * 28,
+    output_size=11,
+    epochs=5,
+    batch_size=16,
+    learning_rate=1e-3,
+    bias=True,
+    regularization_param=1e-2,
+):
+    """
+    Creates a model with two hidden layers of 256 units each, Leaky ReLU activation function, and L1 regularization.
+
+    Returns:
+        MultilayerPerceptron: The MLP model with two hidden layers, Leaky ReLU activation, and L1 regularization.
+    """
+    print(
+        f"epoch: {epochs} batch size: {batch_size}, learning rate: {learning_rate}, regularization_param: {regularization_param} "
+    )
+    mlp = MultilayerPerceptron(
+        input_size=input_size,
+        number_of_hidden_layers=2,
+        output_size=output_size,
+        hidden_layers=[256, 256],
+        activation_function=ReLU,
+        epochs=epochs,
+        batch_size=batch_size,
+        learning_rate=learning_rate,
+        bias=bias,
+        regularization=Regularization.L1,
+        regularization_param=regularization_param,
+    )
+    return mlp
+
+
+def create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2_28_by_28(
+    input_size=28 * 28,
+    output_size=11,
+    epochs=5,
+    batch_size=16,
+    learning_rate=1e-3,
+    bias=True,
+    regularization_param=1e-1,
 ):
     """
     Creates a model with two hidden layers of 256 units each, Leaky ReLU activation function, and L2 regularization.
