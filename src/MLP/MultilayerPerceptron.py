@@ -3,21 +3,24 @@ from typing import Callable, List
 from utils import ReLU, cross_entropy_loss_derivative, softmax
 from RegularizationType import Regularization
 
+
 class MultilayerPerceptron:
 
     def __init__(
-        self,
-        input_size: int,
-        output_size: int,
-        hidden_layers: List[int] = [64, 64],
-        number_of_hidden_layers: int = 2,
-        activation_function: Callable = ReLU,
-        learning_rate: float = 0.001,
-        epochs: int = 100,
-        batch_size: int = 16,
-        bias: bool = True,
-        regularization: Regularization = Regularization.NONE,
-        regularization_param: float = 0.01,
+            self,
+            input_size: int,
+            output_size: int,
+            hidden_layers: List[int] = [64, 64],
+            number_of_hidden_layers: int = 2,
+            activation_function: Callable = ReLU,
+            learning_rate: float = 0.001,
+            epochs: int = 10,
+            batch_size: int = 16,
+            bias: bool = True,
+            regularization: Regularization = Regularization.NONE,
+            regularization_param: float = 0.01,
+            initialization_strategy: str = "he",  # New parameter
+
     ):
         self.input_size = input_size
         self.output_size = output_size
@@ -30,6 +33,7 @@ class MultilayerPerceptron:
         self.bias = bias
         self.regularization = regularization
         self.regularization_param = regularization_param
+        self.initialization_strategy = initialization_strategy  # Store strategy
         self.initialize_parameters()
 
     def initialize_parameters(self):
@@ -37,15 +41,23 @@ class MultilayerPerceptron:
         Initialize the weights and biases for the network.
         """
         layer_sizes = (
-            [self.input_size]
-            + self.hidden_layers[: self.number_of_hidden_layers]
-            + [self.output_size]
+                [self.input_size]
+                + self.hidden_layers[: self.number_of_hidden_layers]
+                + [self.output_size]
         )
-        self.weights = [
-            np.random.randn(layer_sizes[i], layer_sizes[i + 1])  # random initialization
-            * np.sqrt(2.0 / layer_sizes[i])  # Scaling the weights
-            for i in range(len(layer_sizes) - 1)  # iterate over the layers
-        ]
+
+        if self.initialization_strategy == "he":
+            # He initialization for ReLU
+            self.weights = [
+                    np.random.randn(layer_sizes[i], layer_sizes[i + 1]) * np.sqrt(2.0 / layer_sizes[i])
+                    for i in range(len(layer_sizes) - 1)
+                ]
+        elif self.initialization_strategy == "xavier":
+            # Xavier initialization for Tanh
+            self.weights = [
+                np.random.randn(layer_sizes[i], layer_sizes[i + 1]) * np.sqrt(1.0 / layer_sizes[i])
+                for i in range(len(layer_sizes) - 1)
+            ]
 
         if self.bias:
             self.biases = [
@@ -134,7 +146,7 @@ class MultilayerPerceptron:
             if self.bias:
                 # dL/db = sum(dL/dZ) / m -> db = sum(dZ) / m
                 bias_gradient = (
-                    np.sum(pre_activation_gradient, axis=0, keepdims=True) / m
+                        np.sum(pre_activation_gradient, axis=0, keepdims=True) / m
                 )
                 bias_gradients.insert(0, bias_gradient)
 
@@ -183,8 +195,8 @@ class MultilayerPerceptron:
 
             # Loop through the dataset in batches
             for i in range(0, X.shape[0], self.batch_size):
-                X_batch = X[i : i + self.batch_size]
-                y_batch = y[i : i + self.batch_size]
+                X_batch = X[i: i + self.batch_size]
+                y_batch = y[i: i + self.batch_size]
                 # Forward pass: compute activations (A) and pre-activations (Z) using Z = A_prev * W + b, A = g(Z)
                 activations, Z_values = self.forward(X_batch)
                 # Backward pass: compute gradients of the loss with respect to the weights and biases 
@@ -228,3 +240,31 @@ class MultilayerPerceptron:
         # Calculate the accuracy as the proportion of correct predictions
         accuracy = np.mean(predictions == labels)
         return accuracy
+
+    def evaluate_recall(self, y, yh):
+        """
+        Evaluate the recall of the model's predictions.
+        Args:
+            y (numpy.ndarray): True labels of shape (n_samples, n_classes).
+            yh (numpy.ndarray): Predicted probabilities of shape (n_samples, n_classes).
+        Returns:
+            float: The recall of the predictions.
+        """
+        # Convert the predicted probabilities to class labels
+        predictions = np.argmax(yh, axis=1)
+        # Convert the true labels to class labels
+        labels = np.argmax(y, axis=1)
+            
+        recalls = []
+        for class_label in range(y.shape[1]):
+            # Calculate true positives and false negatives for each class
+            true_positives = np.sum((predictions == labels) & (labels == class_label))
+            false_negatives = np.sum((predictions != labels) & (labels == class_label))
+            
+            # Calculate recall for each class
+            recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) != 0 else 0
+            recalls.append(recall)
+        
+        # Calculate average recall
+        average_recall = np.mean(recalls)
+        return average_recall
