@@ -1,6 +1,7 @@
 from utils_cnn_MobileNet import *
 import numpy as np
 from medmnist import OrganAMNIST
+import os
 
 
 def main():

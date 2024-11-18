@@ -1,18 +1,4 @@
 import numpy as np
-def compute_mean_std(train_dataset):
-    mean_sum = 0
-    total_pixels = 0
-    for img, _ in train_dataset:
-        img = np.array(img)  # Convert PIL image to NumPy array
-        img = img.reshape(-1)  # Flatten the image
-        mean_sum += img.sum()  # Total sum of all pixel values
-        total_pixels += img.size  # Total number of pixels in the dataset
-
-    # Calculate the mean across all pixels
-    mean = mean_sum / total_pixels
-
-    # Second pass: Calculate the variance
-    variance_sum = 0import numpy as np
 from tensorflow.keras import layers, models
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.optimizers import Adam
@@ -21,6 +7,7 @@ from sklearn.metrics import recall_score, f1_score
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import time
+import os
 
 
 def compute_mean_std(train_dataset):
@@ -45,11 +32,13 @@ def compute_mean_std(train_dataset):
 
     # Calculate the standard deviation
     std = np.sqrt(variance_sum / total_pixels)
-    return mean ,std
+    return mean, std
 
-def numpy_transform(img,mean,std):
+
+def numpy_transform(img, mean, std):
     img = (img - mean) / std  # Normalize using calculated mean and std
     return img
+
 
 def convert_data_from_loader(loader):
     data_list = []
@@ -63,8 +52,8 @@ def convert_data_from_loader(loader):
     return data_list, labels_list
 
 
-
-def create_cnn_model(input_shape, num_classes, num_filters=(4, 8, 12), kernel_size=(3, 3), stride=(1, 1), padding='valid', is_large=False):
+def create_cnn_model(input_shape, num_classes, num_filters=(4, 8, 12), kernel_size=(3, 3), stride=(1, 1),
+                     padding='valid', is_large=False):
     """
     Creates a CNN model with configurable convolutional layer hyperparameters.
 
@@ -112,7 +101,7 @@ def create_cnn_model(input_shape, num_classes, num_filters=(4, 8, 12), kernel_si
     return model
 
 
-def preprocess_data_cnn(size, mean=None, std=None, validation_split=0.2,validation = True):
+def preprocess_data_cnn(size, mean=None, std=None, validation_split=0.2, validation=True):
     """
     Prepares and preprocesses the training, validation, and test data.
 
@@ -144,9 +133,7 @@ def preprocess_data_cnn(size, mean=None, std=None, validation_split=0.2,validati
 
         return train_list, train_label, val_list, val_label, test_list, test_label
     else:
-        return train_list,train_label,test_list,test_label
-
-
+        return train_list, train_label, test_list, test_label
 
 
 def train_and_record_history(model, x_train, y_train, x_val, y_val, x_test, y_test, epochs=10):
@@ -212,7 +199,8 @@ def train_and_record_history(model, x_train, y_train, x_val, y_val, x_test, y_te
         test_recall.append(recall_score(y_test, y_test_pred, average='weighted'))
         test_f1.append(f1_score(y_test, y_test_pred, average='weighted'))
 
-        print(f"Epoch {epoch + 1}: {epoch_time:.2f} seconds, Test Accuracy: {test_acc_epoch:.4f}, Test Recall: {test_recall[-1]:.4f}, Test F1: {test_f1[-1]:.4f}")
+        print(
+            f"Epoch {epoch + 1}: {epoch_time:.2f} seconds, Test Accuracy: {test_acc_epoch:.4f}, Test Recall: {test_recall[-1]:.4f}, Test F1: {test_f1[-1]:.4f}")
 
     return {
         'epoch_times': epoch_times,
@@ -226,6 +214,8 @@ def train_and_record_history(model, x_train, y_train, x_val, y_val, x_test, y_te
         'validation_f1': validation_f1,
         'test_f1': test_f1
     }
+
+
 def time_model(model, x_train, y_train, x_val, y_val, x_test, y_test, epochs=10):
     start_time = time.time()
 
@@ -239,6 +229,7 @@ def time_model(model, x_train, y_train, x_val, y_val, x_test, y_test, epochs=10)
     training_time = time.time() - start_time
     print(f"Training time: {training_time:.2f} seconds")
     return training_time
+
 
 def plot_combined_metrics(metrics_small, metrics_large, filename_prefix):
     """
@@ -270,7 +261,14 @@ def plot_combined_metrics(metrics_small, metrics_large, filename_prefix):
     plt.grid(True)
 
     # Save the plot
-    plt.savefig('accuracy_trends_combined.png')
+
+    result_folder = "../Results-CNN-CNN"
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+
+    # Correcting the filename
+    result_file = os.path.join(result_folder, "accuracy_trends_combined.png")
+    plt.savefig(result_file)
     plt.close()
 
 
@@ -294,7 +292,14 @@ def plot_combined_time(epoch_times_small, epoch_times_large, filename_prefix):
     plt.title('Training Time Comparison: 28 vs. 128 CNN')
     plt.legend()
     plt.grid(True)
-    plt.savefig(f'{filename_prefix}_combined_training_time.png')
+
+    result_folder = "../Results-CNN-CNN"
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+
+    # Correcting the filename
+    result_file = os.path.join(result_folder, f'{filename_prefix}_combined_training_time.png')
+    plt.savefig(result_file)
     plt.close()
 
 
@@ -314,8 +319,10 @@ def plot_recall_f1(metrics_small, metrics_large, epochs):
     plt.plot(epoch_range, metrics_small['training_recall'], label='28x28 CNN - Training Recall', marker='o')
     plt.plot(epoch_range, metrics_small['validation_recall'], label='28x28 CNN - Validation Recall', marker='x')
     plt.plot(epoch_range, metrics_small['test_recall'], label='28x28 CNN - Test Recall', marker='s')
-    plt.plot(epoch_range, metrics_large['training_recall'], label='128x128 CNN - Training Recall', marker='o', linestyle='--')
-    plt.plot(epoch_range, metrics_large['validation_recall'], label='128x128 CNN - Validation Recall', marker='x', linestyle='--')
+    plt.plot(epoch_range, metrics_large['training_recall'], label='128x128 CNN - Training Recall', marker='o',
+             linestyle='--')
+    plt.plot(epoch_range, metrics_large['validation_recall'], label='128x128 CNN - Validation Recall', marker='x',
+             linestyle='--')
     plt.plot(epoch_range, metrics_large['test_recall'], label='128x128 CNN - Test Recall', marker='s', linestyle='--')
 
     plt.xlabel('Epoch')
@@ -323,16 +330,25 @@ def plot_recall_f1(metrics_small, metrics_large, epochs):
     plt.title('Recall Comparison: Small vs Large CNN')
     plt.legend()
     plt.grid(True)
-    plt.savefig('recall_comparison.png')
-    plt.show()
+
+    result_folder = "../Results-CNN-CNN"
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+
+    # Correcting the filename
+    result_file = os.path.join(result_folder, 'recall_comparison.png')
+    plt.savefig(result_file)
+    plt.close()
 
     # Plot F1-Score
     plt.figure(figsize=(12, 6))
     plt.plot(epoch_range, metrics_small['training_f1'], label='28x28 CNN - Training F1-Score', marker='o')
     plt.plot(epoch_range, metrics_small['validation_f1'], label='28x28 CNN - Validation F1-Score', marker='x')
     plt.plot(epoch_range, metrics_small['test_f1'], label='28x28 CNN - Test F1-Score', marker='s')
-    plt.plot(epoch_range, metrics_large['training_f1'], label='128x128 CNN - Training F1-Score', marker='o', linestyle='--')
-    plt.plot(epoch_range, metrics_large['validation_f1'], label='128x128 CNN - Validation F1-Score', marker='x', linestyle='--')
+    plt.plot(epoch_range, metrics_large['training_f1'], label='128x128 CNN - Training F1-Score', marker='o',
+             linestyle='--')
+    plt.plot(epoch_range, metrics_large['validation_f1'], label='128x128 CNN - Validation F1-Score', marker='x',
+             linestyle='--')
     plt.plot(epoch_range, metrics_large['test_f1'], label='128x128 CNN - Test F1-Score', marker='s', linestyle='--')
 
     plt.xlabel('Epoch')
@@ -340,8 +356,15 @@ def plot_recall_f1(metrics_small, metrics_large, epochs):
     plt.title('F1-Score Comparison: Small vs Large CNN')
     plt.legend()
     plt.grid(True)
-    plt.savefig('f1_comparison.png')
-    plt.show()
+    result_folder = "../Results-CNN-CNN"
+    if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
+
+    # Correcting the filename
+    result_file = os.path.join(result_folder, 'f1_comparison.png')
+    plt.savefig(result_file)
+    plt.close()
+
 
 def train_and_evaluate_model(model, train_data, train_labels, test_data, test_labels, epochs=10, batch_size=32):
     start_time = time.time()
@@ -351,11 +374,68 @@ def train_and_evaluate_model(model, train_data, train_labels, test_data, test_la
     return accuracy, training_time
 
 
+def plot_performance(metrics, mb=False):
+    """
+    Plots the accuracy trends of small and large CNN models in a single plot.
 
+    Args:
+        metrics_small (dict): Metrics for the small CNN model.
+        metrics_large (dict): Metrics for the large CNN model.
+        filename_prefix (str): Prefix for the saved plot filename.
+    """
+    if not mb:
+        epochs = range(1, len(metrics['training_acc']) + 1)
+
+        plt.figure(figsize=(12, 8))
+
+        # 28x28 CNN accuracies
+        plt.plot(epochs, metrics['training_acc'], label='Selected CNN Training Accuracy', marker='o')
+
+        plt.plot(epochs, metrics['test_acc'], label='Selected CNN Test Accuracy', marker='s')
+
+        # Add plot formatting
+        plt.xlabel('Epoch')
+        plt.ylabel('Accuracy')
+        plt.title('Training and Test Accuracy for selected CNNs')
+        plt.legend()
+        plt.grid(True)
+
+        # Save the plot
+        result_folder = "../Results-CNN-CNN"
+        if not os.path.exists(result_folder):
+            os.makedirs(result_folder)
+
+        # Correcting the filename
+        result_file = os.path.join(result_folder, "accuracy_trends_F32K3P2.png")
+        plt.savefig(result_file)
+        plt.close()
+    else:
+        epochs = range(1, len(metrics['train_acc']) + 1)
+
+        plt.figure(figsize=(12, 8))
+        plt.plot(epochs, metrics['train_acc'], label='2 Fully Connected layer Training Accuracy', marker='o')
+
+        plt.plot(epochs, metrics['test_acc'], label='2 Fully Connected layer Test Accuracy', marker='s')
+
+        # Add plot formatting
+        plt.xlabel('Epoch')
+        plt.ylabel('Accuracy')
+        plt.title('Training and Test Accuracy for Pre-trained Model with 2 FC layer')
+        plt.legend()
+        plt.grid(True)
+
+        # Save the plot
+        result_folder = "../Results-CNN-MobileNet"
+        if not os.path.exists(result_folder):
+            os.makedirs(result_folder)
+
+        # Correcting the filename
+        result_file = os.path.join(result_folder, "accuracy_trends_2FC_layer.png")
+        plt.savefig(result_file)
+        plt.close()
 
 
 ################################################################################################################################
-
 
 
 def create_mobileNet(input_shape, num_classes, num_fc_layers=1):
@@ -383,21 +463,26 @@ def create_mobileNet(input_shape, num_classes, num_fc_layers=1):
     elif num_fc_layers == 2:
         fc_layers = [layers.Dense(64, activation='relu'), layers.Dense(32, activation='relu')]
     elif num_fc_layers == 3:
-        fc_layers = [layers.Dense(128, activation='relu'), layers.Dense(64, activation='relu'), layers.Dense(32, activation='relu')]
+        fc_layers = [layers.Dense(128, activation='relu'), layers.Dense(64, activation='relu'),
+                     layers.Dense(32, activation='relu')]
     elif num_fc_layers == 4:
-        fc_layers = [layers.Dense(256, activation='relu'), layers.Dense(128, activation='relu'), layers.Dense(64, activation='relu'),
-                             layers.Dense(32, activation='relu')]
+        fc_layers = [layers.Dense(256, activation='relu'), layers.Dense(128, activation='relu'),
+                     layers.Dense(64, activation='relu'),
+                     layers.Dense(32, activation='relu')]
     elif num_fc_layers == 5:
-        fc_layers = [layers.Dense(256, activation='relu'),layers.Dense(256, activation='relu'), layers.Dense(128, activation='relu'), layers.Dense(64, activation='relu'),
-                             layers.Dense(32, activation='relu')]
+        fc_layers = [layers.Dense(256, activation='relu'), layers.Dense(256, activation='relu'),
+                     layers.Dense(128, activation='relu'), layers.Dense(64, activation='relu'),
+                     layers.Dense(32, activation='relu')]
     elif num_fc_layers == 6:
-        fc_layers = [layers.Dense(256, activation='relu'),layers.Dense(256, activation='relu'),layers.Dense(256, activation='relu'), layers.Dense(128, activation='relu'), layers.Dense(64, activation='relu'),
-                             layers.Dense(32, activation='relu')]
+        fc_layers = [layers.Dense(256, activation='relu'), layers.Dense(256, activation='relu'),
+                     layers.Dense(256, activation='relu'), layers.Dense(128, activation='relu'),
+                     layers.Dense(64, activation='relu'),
+                     layers.Dense(32, activation='relu')]
     elif num_fc_layers == 7:
-        fc_layers = [layers.Dense(256, activation='relu'),layers.Dense(256, activation='relu'),layers.Dense(256, activation='relu'),layers.Dense(256, activation='relu'), layers.Dense(128, activation='relu'), layers.Dense(64, activation='relu'),
-                             layers.Dense(32, activation='relu')]
-
-
+        fc_layers = [layers.Dense(256, activation='relu'), layers.Dense(256, activation='relu'),
+                     layers.Dense(256, activation='relu'), layers.Dense(256, activation='relu'),
+                     layers.Dense(128, activation='relu'), layers.Dense(64, activation='relu'),
+                     layers.Dense(32, activation='relu')]
 
     # Add custom layers on top
     model = models.Sequential([
@@ -442,7 +527,6 @@ def prepare_data(size=128):
     test_list = np.repeat(test_list, 3, axis=-1)
     test_label = np.array(test_label).reshape(-1)
 
-
     return train_list, train_label, test_list, test_label
 
 
@@ -466,8 +550,7 @@ def train_and_record_mbnt(model, train_list, train_label, test_list, test_label,
     start_time = time.time()
     for epoch in range(epochs):
         # Train for one epoch
-        history = model.fit(train_list, train_label, epochs=1,validation_split=0.2, batch_size=32, verbose=1)
-
+        history = model.fit(train_list, train_label, epochs=1, validation_split=0.2, batch_size=32, verbose=1)
 
         # Store training and validation metrics
         training_acc.append(history.history['accuracy'][-1])
@@ -475,7 +558,7 @@ def train_and_record_mbnt(model, train_list, train_label, test_list, test_label,
         test_acc_epoch = np.mean(test_label == y_test_pred)  # Test accuracy
         test_acc.append(test_acc_epoch)
 
-    total_time = time.time()-start_time
+    total_time = time.time() - start_time
     loss, accuracy = model.evaluate(test_list, test_label, verbose=0)
     print(f"Test loss: {loss:.4f}, Test accuracy: {accuracy:.4f}")
     print(f"Training time: {total_time:.2f} seconds")
@@ -501,28 +584,3 @@ def train_and_record_mbnt(model, train_list, train_label, test_list, test_label,
 
 
 
-
-
-    for img, _ in train_dataset:
-        img = np.array(img)
-        img = img.reshape(-1)
-        variance_sum += ((img - mean) ** 2).sum()  # Sum of squared differences from the mean
-
-    # Calculate the standard deviation
-    std = np.sqrt(variance_sum / total_pixels)
-    return mean ,std
-
-def numpy_transform(img,mean,std):
-    img = (img - mean) / std  # Normalize using calculated mean and std
-    return img
-
-def convert_data_from_loader(loader):
-    data_list = []
-    labels_list = []
-    # Iterate through the DataLoader
-    for data, labels in loader:
-        data_list.append(data)
-        labels_list.append(labels[0])
-
-    data_list = np.array(data_list)
-    return data_list, labels_list

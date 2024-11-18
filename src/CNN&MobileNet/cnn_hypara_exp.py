@@ -1,5 +1,6 @@
 from utils_cnn_MobileNet import *
 from medmnist import OrganAMNIST
+import os
 
 
 def experiment_hyperparameters(input_size):
@@ -84,4 +85,21 @@ def experiment_hyperparameters(input_size):
     plt.savefig('Comparison_through_CNNs.png')
 
 
+def train_test_accuracy_for_selected_model(input_size):
+    # Load data
+
+    train_dataset = OrganAMNIST(split="train", size=input_size)
+    mean, std = compute_mean_std(train_dataset)
+    num_classes = 11
+    train_data, train_labels, val_data, val_labels, test_data, test_labels = preprocess_data_cnn(input_size, mean, std,
+                                                                                                 validation=True)
+
+    model = create_cnn_model((input_size, input_size, 1), num_classes, (32, 64, 128), (3, 3), (2, 2), "same",
+                             is_large=True)
+    metrics_large = train_and_record_history(model, train_data, train_labels, val_data, val_labels, test_data,
+                                             test_labels, epochs=40)
+    plot_performance(metrics_large)
+
+
 experiment_hyperparameters(128)
+train_test_accuracy_for_selected_model(128)
