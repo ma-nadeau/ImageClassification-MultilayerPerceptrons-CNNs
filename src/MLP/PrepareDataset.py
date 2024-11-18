@@ -1705,7 +1705,7 @@ if __name__ == "__main__":
         prepare_normalized_dataset(size=128)
     )
 
-    Experiment #1
+    # Experiment #1
     (
         acc_no_hidden_layer,
         diff_no_hidden_layer,
