@@ -12,4 +12,4 @@
 module load cuda/cuda-12.6
 module load miniconda/miniconda-fall2024
 
-python ../../ImageClassification-MultilayerPerceptrons-CNNs/src/Code/PrepareDataset.py
+python ../../ImageClassification-MultilayerPerceptrons-CNNs/src/MLP/PrepareDataset.py

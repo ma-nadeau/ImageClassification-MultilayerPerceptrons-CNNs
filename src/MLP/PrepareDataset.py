@@ -515,9 +515,9 @@ def plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
         "2 Layers + Tanh": create_mlp_with_double_hidden_layer_of_256_and_tanh_activation,
         "2 Layers + ReLU + L1 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1,
         "2 Layers + ReLU + L2 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2,
-        # "Double Layers + Sigmoid": create_mlp_with_double_hidden_layer_of_256_units_and_sigmoid_activation,
-        # "Double Layers + ReLU + L1": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1,
-        # "Double Layers + ReLU + L2": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2,
+        "Double Layers + Sigmoid": create_mlp_with_double_hidden_layer_of_256_units_and_sigmoid_activation,
+        "Double Layers + ReLU + L1": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1,
+        "Double Layers + ReLU + L2": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2,
     }
 
     if not os.path.exists(output_dir):
@@ -751,15 +751,15 @@ def plot_accuracy_for_epochs(
     output_dir (str): Directory where the plots will be saved.
     """
     models = {
-        # "No Hidden Layer": create_mlp_with_no_hidden_layer,
-        # "1 Hidden Layer (256 units)": create_mlp_with_single_hidden_layer_of_256_units,
-        # "2 Hidden Layers (256 units)": create_mlp_with_double_hidden_layer_of_256_units,
-        # "2 Layers + Leaky ReLU": create_mlp_with_double_hidden_layer_of_256_units_and_leaky_ReLU_activation,
-        # "2 Layers + Tanh": create_mlp_with_double_hidden_layer_of_256_and_tanh_activation,
+        "No Hidden Layer": create_mlp_with_no_hidden_layer,
+        "1 Hidden Layer (256 units)": create_mlp_with_single_hidden_layer_of_256_units,
+        "2 Hidden Layers (256 units)": create_mlp_with_double_hidden_layer_of_256_units,
+        "2 Layers + Leaky ReLU": create_mlp_with_double_hidden_layer_of_256_units_and_leaky_ReLU_activation,
+        "2 Layers + Tanh": create_mlp_with_double_hidden_layer_of_256_and_tanh_activation,
         "2 Layers + ReLU + L1 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1,
-        # "2 Layers + ReLU + L2 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2,
-        # "Double Layers + ReLU + L1": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1_28_by_28,
-        # "Double Layers + ReLU + L2": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2_28_by_28,
+        "2 Layers + ReLU + L2 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2,
+        "Double Layers + ReLU + L1": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1_28_by_28,
+        "Double Layers + ReLU + L2": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2_28_by_28,
     }
 
     if not os.path.exists(output_dir):
@@ -911,8 +911,6 @@ def regularization_strengths(train_list, train_label, test_list, test_label):
     result_file = os.path.join(result_folder, "accuracy_vs_regularization_plot.png")
     plt.savefig(result_file)
 
-
-def plot_experiment_results2():
 
     # Prepare data for plotting
     # accuracies = [
@@ -1707,78 +1705,78 @@ if __name__ == "__main__":
         prepare_normalized_dataset(size=128)
     )
 
-    # Experiment #1
-    # (
-    #     acc_no_hidden_layer,
-    #     diff_no_hidden_layer,
-    #     recall_no_hidden_layer,
-    #     acc_single_hidden_layer,
-    #     diff_single_hidden_layer,
-    #     recall_single_hidden_layer,
-    #     acc_double_hidden_layer,
-    #     diff_double_hidden_layer,
-    #     recall_double_hidden_layer,
-    # ) = compare_basic_mlp_models(train_list, train_label, test_list, test_label)
+    Experiment #1
+    (
+        acc_no_hidden_layer,
+        diff_no_hidden_layer,
+        recall_no_hidden_layer,
+        acc_single_hidden_layer,
+        diff_single_hidden_layer,
+        recall_single_hidden_layer,
+        acc_double_hidden_layer,
+        diff_double_hidden_layer,
+        recall_double_hidden_layer,
+    ) = compare_basic_mlp_models(train_list, train_label, test_list, test_label)
 
-    # # Experiment #2
-    # (
-    #     acc_double_hidden_layer_relu,
-    #     diff_double_hidden_layer_relu,
-    #     recall_double_hidden_layer_relu,
-    #     acc_double_hidden_layer_leaky_relu,
-    #     diff_double_hidden_layer_leaky_relu,
-    #     recall_double_hidden_layer_leaky_relu,
-    #     acc_double_hidden_layer_tanh,
-    #     diff_double_hidden_layer_tanh,
-    #     recall_double_hidden_layer_tanh,
-    # ) = compare_activations_for_256_double_hidden_layers(
-    #     train_list, train_label, test_list, test_label
-    # )
+    # Experiment #2
+    (
+        acc_double_hidden_layer_relu,
+        diff_double_hidden_layer_relu,
+        recall_double_hidden_layer_relu,
+        acc_double_hidden_layer_leaky_relu,
+        diff_double_hidden_layer_leaky_relu,
+        recall_double_hidden_layer_leaky_relu,
+        acc_double_hidden_layer_tanh,
+        diff_double_hidden_layer_tanh,
+        recall_double_hidden_layer_tanh,
+    ) = compare_activations_for_256_double_hidden_layers(
+        train_list, train_label, test_list, test_label
+    )
 
-    # # Experiment #3
-    # (
-    #     acc_double_hidden_layer_L1,
-    #     diff_time_double_hidden_layer_L1,
-    #     recall_double_hidden_layer_L1,
-    #     acc_double_hidden_layer_L2,
-    #     diff_time_double_hidden_layer_L2,
-    #     recall_double_hidden_layer_L2,
-    # ) = compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
-    #     train_list, train_label, test_list, test_label
-    # )
+    # Experiment #3
+    (
+        acc_double_hidden_layer_L1,
+        diff_time_double_hidden_layer_L1,
+        recall_double_hidden_layer_L1,
+        acc_double_hidden_layer_L2,
+        diff_time_double_hidden_layer_L2,
+        recall_double_hidden_layer_L2,
+    ) = compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
+        train_list, train_label, test_list, test_label
+    )
 
-    # # Experiment #4
-    # acc_double_hidden_layer_unnormalized, diff_time_double_hidden_layer_unnormalized, recall_double_hidden_layer_unnormalized = evaluate_256_double_hidden_layers_unnormalized_image(
-    #     unnormalized_train_list,
-    #     unnormalized_train_label,
-    #     unnormalized_test_list,
-    #     unnormalized_test_label,
-    # )
+    # Experiment #4
+    acc_double_hidden_layer_unnormalized, diff_time_double_hidden_layer_unnormalized, recall_double_hidden_layer_unnormalized = evaluate_256_double_hidden_layers_unnormalized_image(
+        unnormalized_train_list,
+        unnormalized_train_label,
+        unnormalized_test_list,
+        unnormalized_test_label,
+    )
 
-    # # Experiment #5 - 128x128 pixels
-    # (
-    #     acc_double_hidden_layer_L1_128,
-    #     diff_time_double_hidden_layer_L1_128,
-    #     recall_double_hidden_layer_L1_128,
-    #     acc_double_hidden_layer_L2_128,
-    #     diff_time_double_hidden_layer_L2_128,
-    #     recall_double_hidden_layer_L2_128,
-    # ) = compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
-    #     train_list_128,
-    #     train_label_128,
-    #     test_list_128,
-    #     test_label_128,
-    #     input_size=128 * 128,
-    # )
+    # Experiment #5 - 128x128 pixels
+    (
+        acc_double_hidden_layer_L1_128,
+        diff_time_double_hidden_layer_L1_128,
+        recall_double_hidden_layer_L1_128,
+        acc_double_hidden_layer_L2_128,
+        diff_time_double_hidden_layer_L2_128,
+        recall_double_hidden_layer_L2_128,
+    ) = compare_L1_and_L2_regularization_for_256_double_hidden_layers_MLP(
+        train_list_128,
+        train_label_128,
+        test_list_128,
+        test_label_128,
+        input_size=128 * 128,
+    )
 
-    # # Experiment #6 - Train vs. Test Accuracy for Learning Rates
-    # learning_rates = [1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1]
-    # batch_sizes = [8, 16, 32, 64, 128]
-    # epoch_sizes = [5, 10, 20, 50, 100]
-    # plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
-    #     train_list, train_label, test_list, test_label, learning_rates, batch_sizes, epoch_sizes,
-    #     train_list_128, train_label_128, test_list_128, test_label_128
-    # )
+    # Experiment #6 - Train vs. Test Accuracy for Learning Rates
+    learning_rates = [1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1]
+    batch_sizes = [8, 16, 32, 64, 128]
+    epoch_sizes = [5, 10, 20, 50, 100]
+    plot_accuracy_for_batch_sizes_learning_rates_and_epochs(
+        train_list, train_label, test_list, test_label, learning_rates, batch_sizes, epoch_sizes,
+        train_list_128, train_label_128, test_list_128, test_label_128
+    )
 
     epoch_sizes = [1, 2, 5, 10, 15]
     plot_accuracy_for_epochs(
@@ -1792,16 +1790,14 @@ if __name__ == "__main__":
         test_list_128,
         test_label_128,
     )
-    # regularization_strengths(train_list, train_label, test_list, test_label)
+    regularization_strengths(train_list, train_label, test_list, test_label)
 
-    # # Call the function to plot Tanh and Leaky ReLU with increasing hidden layers and width
-    # plot_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
-    # plot_recall_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
-    # plot_tanh_and_leaky_relu_with_increasing_width(train_list, train_label, test_list, test_label)
-    # plot_recall_tanh_and_leaky_relu_with_increasing_width(train_list, train_label, test_list, test_label)
+    # Call the function to plot Tanh and Leaky ReLU with increasing hidden layers and width
+    plot_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
+    plot_recall_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
+    plot_tanh_and_leaky_relu_with_increasing_width(train_list, train_label, test_list, test_label)
+    plot_recall_tanh_and_leaky_relu_with_increasing_width(train_list, train_label, test_list, test_label)
 
-    # # Call the function to plot the results
-    plot_experiment_results2()
 
-    # # Sigmoid and Softmax
-    # compare_sigmoid_and_softmax(train_list, train_label, test_list, test_label)
+    # Sigmoid and Softmax
+    compare_sigmoid_and_softmax(train_list, train_label, test_list, test_label)
