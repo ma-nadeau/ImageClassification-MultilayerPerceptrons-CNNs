@@ -236,7 +236,7 @@ def create_mlp_with_double_hidden_layer_of_256_units_and_softmax_activation(
     return mlp
 
 def create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1(
-    input_size=28 * 28,
+    input_size=128 * 128,
     output_size=11,
     epochs=5,
     batch_size=16,
@@ -270,7 +270,7 @@ def create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1(
 
 
 def create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2(
-    input_size=28 * 28,
+    input_size=128 * 128,
     output_size=11,
     epochs=5,
     batch_size=16,
