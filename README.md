@@ -1,5 +1,8 @@
 # ImageClassification-MultilayerPerceptrons-CNNs
 
+## Contributors
+
+Created by [Marc-Antoine Nadeau](https://github.com/ma-nadeau), [Jessie Kurtz](https://github.com/jkzcodes), and [Baicheng Peng](https://github.com/sivess)
 
 ## Overview
 
@@ -12,9 +15,28 @@ Convolutional Neural Networks (CNNs): Specialized for spatial feature extraction
 Pre-trained MobileNetV2: A lightweight architecture that transfers knowledge from large-scale datasets, achieving high accuracy with reduced training time.
 This project emphasizes the importance of hyperparameter optimization (e.g., learning rate, batch size, and regularization strength) and explores the trade-offs between computational efficiency and performance.
 
-## Architecture 
+## File Structure  
+### How to Run
+#### Multilayer Perceptron
+1. Navigate to the `src/MLP` folder.
+2. Run the `PrepareDataset.py` file.
 
-MARC PLEASE WRITE!
+#### Convolutional Neural Network
+1. Navigate to the `src/CNN` folder.
+2. Run the `CNN_28_128.py` file.
+
+#### Resnet
+1. Navigate to the `src/MobileNet` folder.
+2. Run the `MobileNet.py` file.
+
+
+### Results
+Any resulting figures/graphs will be saved in their respective folders:
+- `Results-MLP`: Contains the results for the Multilayer Perceptron (MLP) model.
+- `Results-CNN`: Contains the results for the Convolutional Neural Network (CNN) model.
+- `Results-ResNet`: Contains the results for the ResNet model.
+
+
 
 ## Key Features
 Dataset:
@@ -53,3 +75,19 @@ This repository provides insights into designing neural networks for medical ima
 - CNNs: With optimal configurations, achieved 0.8325 accuracy, highlighting the importance of convolutional layers and pooling strategies.
 - MobileNetV2: Achieved the best accuracy of 0.9249, showcasing the benefits of transfer learning for medical image classification.
 Delivered a balance between accuracy and computational efficiency.
+
+
+
+## Prerequisites
+
+Make sure you have the following Python libraries installed:
+- `numpy`
+- `matplotlib`
+- `tensorflow`
+- `OrganAMNIST`
+
+You can install them using pip:
+
+```bash
+pip install numpy matplotlib tensorflow OrganAMNIST
+```
