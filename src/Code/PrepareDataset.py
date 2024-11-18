@@ -709,7 +709,7 @@ def plot_accuracy_for_epochs(
         #"2 Hidden Layers (256 units)": create_mlp_with_double_hidden_layer_of_256_units,
         #"2 Layers + Leaky ReLU": create_mlp_with_double_hidden_layer_of_256_units_and_leaky_ReLU_activation,
         #"2 Layers + Tanh": create_mlp_with_double_hidden_layer_of_256_and_tanh_activation,
-        #"2 Layers + ReLU + L1 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1,
+        "2 Layers + ReLU + L1 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L1,
         "2 Layers + ReLU + L2 (128*128)": create_mlp_with_double_hidden_layer_of_256_units_and_ReLU_activation_L2,
     }
     
@@ -1481,17 +1481,17 @@ if __name__ == "__main__":
     #     train_list_128, train_label_128, test_list_128, test_label_128
     # )
     
-    # epoch_sizes = [1,2,5,10,20]
-    # plot_accuracy_for_epochs(
-    #     train_list, train_label, test_list, test_label, epoch_sizes, train_list_128, train_label_128, test_list_128, test_label_128
-    # )
+    epoch_sizes = [1,2,5,8]
+    plot_accuracy_for_epochs(
+        train_list, train_label, test_list, test_label, epoch_sizes, train_list_128, train_label_128, test_list_128, test_label_128
+    )
     # regularization_strengths(train_list, train_label, test_list, test_label)
 
     # Call the function to plot Tanh and Leaky ReLU with increasing hidden layers and width
     # plot_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
     # plot_recall_tanh_and_leaky_relu_with_extra_hidden_layers(train_list, train_label, test_list, test_label)
-    plot_tanh_and_leaky_relu_with_increasing_width(train_list, train_label, test_list, test_label)
-    plot_recall_tanh_and_leaky_relu_with_increasing_width(train_list, train_label, test_list, test_label)
+    # plot_tanh_and_leaky_relu_with_increasing_width(train_list, train_label, test_list, test_label)
+    # plot_recall_tanh_and_leaky_relu_with_increasing_width(train_list, train_label, test_list, test_label)
     
     # # # Call the function to plot the results
     # plot_experiment_results2()
