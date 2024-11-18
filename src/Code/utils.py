@@ -81,6 +81,21 @@ def tanh(x, derivative=False):
         return tanh_derivative(x)
     return np.tanh(x)
 
+def softmax(x, derivative=False):
+    """Computes the softmax activation function or its derivative.
+
+    Args:
+        x (np.ndarray): Input array.
+        derivative (bool, optional): If True, computes the derivative. Defaults to False.
+
+    Returns:
+        np.ndarray: Output array after applying softmax or its derivative.
+    """
+    if derivative:
+        return softmax_derivative(x)
+    exp_x = np.exp(x - np.max(x, axis=1, keepdims=True))
+    return exp_x / exp_x.sum(axis=1, keepdims=True)
+
 ### Activation Functions Derivatives ###
 
 
@@ -101,6 +116,9 @@ def softmax_derivative(x):
 
 def tanh_derivative(x):
     return 1 - np.tanh(x) ** 2
+
+def softmax_derivative(x):
+    return x * (1 - x)
 
 ### Loss Functions ###
 
@@ -123,3 +141,4 @@ def cross_entropy_loss(y_pred, y_true, derivative=False):
 
 def cross_entropy_loss_derivative(y_pred, y_true):
     return y_pred - y_true
+
