@@ -59,7 +59,7 @@ def experiment_num_layers():
     )
     plt.title('Training Time')
     plt.ylabel('Time (seconds)')
-    result_folder = "../Results-CNN-MobileNet"
+    result_folder = "../Results-MobileNet"
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
 
