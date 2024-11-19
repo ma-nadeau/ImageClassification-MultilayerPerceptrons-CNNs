@@ -26,11 +26,11 @@ A lightweight architecture that transfers knowledge from large-scale datasets, a
 2. Run the `PrepareDataset.py` file.
 
 #### Convolutional Neural Network
-1. Navigate to the `src/CNN` folder.
+1. Navigate to the `src/CNN&MobileNet` folder.
 2. Run the `CNN_28_128.py` and `cnn_hypara_exp.py` files.
 
 #### Resnet
-1. Navigate to the `src/MobileNet` folder.
+1. Navigate to the `src/CNN&MobileNet` folder.
 2. Run the `MobileNet.py` file.
 
 
