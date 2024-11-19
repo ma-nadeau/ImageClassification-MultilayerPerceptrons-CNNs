@@ -262,7 +262,7 @@ def plot_combined_metrics(metrics_small, metrics_large, filename_prefix):
 
     # Save the plot
 
-    result_folder = "../Results-CNN-CNN"
+    result_folder = "../Results-CNN"
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
 
@@ -293,7 +293,7 @@ def plot_combined_time(epoch_times_small, epoch_times_large, filename_prefix):
     plt.legend()
     plt.grid(True)
 
-    result_folder = "../Results-CNN-CNN"
+    result_folder = "../Results-CNN"
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
 
@@ -331,7 +331,7 @@ def plot_recall_f1(metrics_small, metrics_large, epochs):
     plt.legend()
     plt.grid(True)
 
-    result_folder = "../Results-CNN-CNN"
+    result_folder = "../Results-CNN"
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
 
@@ -356,7 +356,7 @@ def plot_recall_f1(metrics_small, metrics_large, epochs):
     plt.title('F1-Score Comparison: Small vs Large CNN')
     plt.legend()
     plt.grid(True)
-    result_folder = "../Results-CNN-CNN"
+    result_folder = "../Results-CNN"
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
 
@@ -401,7 +401,7 @@ def plot_performance(metrics, mb=False):
         plt.grid(True)
 
         # Save the plot
-        result_folder = "../Results-CNN-CNN"
+        result_folder = "../Results-CNN"
         if not os.path.exists(result_folder):
             os.makedirs(result_folder)
 
@@ -425,7 +425,7 @@ def plot_performance(metrics, mb=False):
         plt.grid(True)
 
         # Save the plot
-        result_folder = "../Results-CNN-MobileNet"
+        result_folder = "../Results-MobileNet"
         if not os.path.exists(result_folder):
             os.makedirs(result_folder)
 
