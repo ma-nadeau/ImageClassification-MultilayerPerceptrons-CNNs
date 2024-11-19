@@ -1,3 +1,4 @@
+
 import os
 
 from medmnist import OrganAMNIST  # type: ignore
@@ -95,7 +96,7 @@ def convert_data_from_loader(loader):
     for data, labels in loader:
         data_list.append(data)
         labels_list.append(labels)
-
+        
     encoder = OneHotEncoder(categories="auto", sparse_output=False, dtype=int)
 
     one_hot_labels = encoder.fit_transform(labels_list)
@@ -1801,3 +1802,4 @@ if __name__ == "__main__":
 
     # Sigmoid and Softmax
     compare_sigmoid_and_softmax(train_list, train_label, test_list, test_label)
+

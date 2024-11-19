@@ -31,6 +31,7 @@ class MultilayerPerceptron:
         self.epochs = epochs
         self.batch_size = batch_size
         self.bias = bias
+
         self.regularization = regularization
         self.regularization_param = regularization_param
         self.initialization_strategy = initialization_strategy  # Store strategy
@@ -72,6 +73,7 @@ class MultilayerPerceptron:
         X (numpy.ndarray): Input data of shape (n_samples, n_features).
 
         Returns:
+
             float: The accuracy of the predictions, calculated as the mean of correct predictions. 
             This value represents the proportion of correctly classified samples out of the total samples.
         tuple: A tuple containing:
@@ -138,6 +140,7 @@ class MultilayerPerceptron:
                 weight_gradient += (self.regularization_param / m) * self.weights[i]
             elif self.regularization == Regularization.L1:
                 weight_gradient += (self.regularization_param / m) * np.sign(self.weights[i])
+
 
             # Insert the gradients at the beginning of the list
             weight_gradients.insert(0, weight_gradient)
