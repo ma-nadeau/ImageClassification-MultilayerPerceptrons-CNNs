@@ -67,6 +67,36 @@ def softmax(x, derivative=False):
     return exp_x / exp_x.sum(axis=1, keepdims=True)
 
 
+def tanh(x, derivative=False):
+    """_summary_
+    Computes the tanh activation function or its derivative.
+
+    Args:
+        x (np.ndarray): Input array.
+        derivative (bool, optional): If True, computes the derivative. Defaults to False.
+
+    Returns:
+        np.ndarray: Output array after applying tanh or its derivative.
+    """
+    if derivative:
+        return tanh_derivative(x)
+    return np.tanh(x)
+
+def softmax(x, derivative=False):
+    """Computes the softmax activation function or its derivative.
+
+    Args:
+        x (np.ndarray): Input array.
+        derivative (bool, optional): If True, computes the derivative. Defaults to False.
+
+    Returns:
+        np.ndarray: Output array after applying softmax or its derivative.
+    """
+    if derivative:
+        return softmax_derivative(x)
+    exp_x = np.exp(x - np.max(x, axis=1, keepdims=True))
+    return exp_x / exp_x.sum(axis=1, keepdims=True)
+
 ### Activation Functions Derivatives ###
 
 
@@ -81,6 +111,13 @@ def leaky_ReLU_derivative(x, alpha=0.01):
 def sigmoid_derivative(x):
     return sigmoid(x) * (1 - sigmoid(x))
 
+
+def softmax_derivative(x):
+    return x * (1 - x)
+
+
+def tanh_derivative(x):
+    return 1 - np.tanh(x) ** 2
 
 def softmax_derivative(x):
     return x * (1 - x)
